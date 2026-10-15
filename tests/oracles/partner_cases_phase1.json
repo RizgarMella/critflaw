@@ -1,0 +1,991 @@
+[
+  {
+    "name": "cutoff_ratio_two",
+    "function": "lr_max",
+    "inputs": {
+      "sy": 200000000.0,
+      "su": 400000000.0
+    },
+    "expected": 1.5,
+    "how_obtained": "(200e6 + 400e6)/(2*200e6) = 1.5."
+  },
+  {
+    "name": "cutoff_ratio_three",
+    "function": "lr_max",
+    "inputs": {
+      "sy": 1.0,
+      "su": 3.0
+    },
+    "expected": 2.0,
+    "how_obtained": "(1+3)/2 = 2."
+  },
+  {
+    "name": "continuous_origin_uncapped_mu",
+    "function": "option1_curve",
+    "inputs": {
+      "lr": 0.0,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 100.0
+    },
+    "expected": 1.0,
+    "how_obtained": "mu=0.1; at Lr=0 both multiplicative factors are one."
+  },
+  {
+    "name": "continuous_origin_capped_mu",
+    "function": "option1_curve",
+    "inputs": {
+      "lr": 0.0,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 1000.0
+    },
+    "expected": 1.0,
+    "how_obtained": "mu=min(1,0.6)=0.6; f(0)=1."
+  },
+  {
+    "name": "continuous_below_one",
+    "function": "option1_curve",
+    "inputs": {
+      "lr": 0.5,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 0.0
+    },
+    "expected": 0.9428090415820634,
+    "how_obtained": "mu=0, so f=(1+0.5^2/2)^(-1/2)=sqrt(8/9)."
+  },
+  {
+    "name": "continuous_at_one",
+    "function": "option1_curve",
+    "inputs": {
+      "lr": 1.0,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 0.0
+    },
+    "expected": 0.816496580927726,
+    "how_obtained": "f(1)=sqrt(2/3) when mu=0."
+  },
+  {
+    "name": "continuous_at_one_nonzero_mu",
+    "function": "option1_curve",
+    "inputs": {
+      "lr": 1.0,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 600.0
+    },
+    "expected": 0.5586209514,
+    "how_obtained": "sqrt(2/3)*(0.3+0.7*exp(-0.6)); exp(-0.6)=0.5488116360940264."
+  },
+  {
+    "name": "continuous_above_one",
+    "function": "option1_curve",
+    "inputs": {
+      "lr": 1.25,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 0.0
+    },
+    "expected": 0.5225578117937447,
+    "how_obtained": "N=0.2, exponent=-2; sqrt(2/3)/1.25^2."
+  },
+  {
+    "name": "continuous_below_cutoff",
+    "function": "option1_curve",
+    "inputs": {
+      "lr": 1.6,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 0.0
+    },
+    "expected": 0.31894397692489296,
+    "how_obtained": "Cutoff=2; sqrt(2/3)/1.6^2."
+  },
+  {
+    "name": "continuous_at_cutoff",
+    "function": "option1_curve",
+    "inputs": {
+      "lr": 2.0,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 0.0
+    },
+    "expected": 0.0,
+    "how_obtained": "Lr equals Lr_max, so the cutoff row applies."
+  },
+  {
+    "name": "continuous_above_cutoff",
+    "function": "option1_curve",
+    "inputs": {
+      "lr": 2.1,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 0.0
+    },
+    "expected": 0.0,
+    "how_obtained": "Lr exceeds Lr_max=2."
+  },
+  {
+    "name": "discontinuous_below_one",
+    "function": "option1_curve",
+    "inputs": {
+      "lr": 0.5,
+      "sy": 400000000.0,
+      "su": 600000000.0,
+      "E": 200000000000.0,
+      "discontinuous": true
+    },
+    "expected": 0.9428090415820634,
+    "how_obtained": "The below-one row is independent of E and Luders strain: sqrt(8/9)."
+  },
+  {
+    "name": "discontinuous_at_one_explicit_zero_strain",
+    "function": "option1_curve",
+    "inputs": {
+      "lr": 1.0,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 100.0,
+      "discontinuous": true,
+      "luders_strain": 0.0
+    },
+    "expected": 0.816496580927726,
+    "how_obtained": "lambda=1; (lambda+1/(2lambda))^(-1/2)=sqrt(2/3)."
+  },
+  {
+    "name": "discontinuous_at_one_explicit_strain",
+    "function": "option1_curve",
+    "inputs": {
+      "lr": 1.0,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 1.0,
+      "discontinuous": true,
+      "luders_strain": 1.0
+    },
+    "expected": 0.6666666666666666,
+    "how_obtained": "lambda=2; 2+1/4=9/4, whose inverse square root is 2/3."
+  },
+  {
+    "name": "discontinuous_above_one",
+    "function": "option1_curve",
+    "inputs": {
+      "lr": 1.25,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 1.0,
+      "discontinuous": true,
+      "luders_strain": 1.0
+    },
+    "expected": 0.42666666666666664,
+    "how_obtained": "f(1)=2/3 and N=0.2; (2/3)/1.25^2=32/75."
+  },
+  {
+    "name": "discontinuous_at_cutoff",
+    "function": "option1_curve",
+    "inputs": {
+      "lr": 2.0,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 1.0,
+      "discontinuous": true
+    },
+    "expected": 0.0,
+    "how_obtained": "Cutoff row applies at Lr_max=2."
+  },
+  {
+    "name": "discontinuous_above_cutoff",
+    "function": "option1_curve",
+    "inputs": {
+      "lr": 2.1,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 1.0,
+      "discontinuous": true
+    },
+    "expected": 0.0,
+    "how_obtained": "Cutoff row applies above Lr_max."
+  },
+  {
+    "name": "rho_zero_chi",
+    "function": "rho",
+    "inputs": {
+      "chi": 0.0,
+      "lr": 0.0
+    },
+    "expected": 0.0,
+    "how_obtained": "All three terms of rho1 vanish."
+  },
+  {
+    "name": "rho_below_08",
+    "function": "rho",
+    "inputs": {
+      "chi": 1.0,
+      "lr": 0.7999
+    },
+    "expected": 0.09303,
+    "how_obtained": "rho1=0.1-0.007+0.00003=0.09303; no taper."
+  },
+  {
+    "name": "rho_at_08",
+    "function": "rho",
+    "inputs": {
+      "chi": 1.0,
+      "lr": 0.8
+    },
+    "expected": 0.09303,
+    "how_obtained": "The Lr<=0.8 row includes equality."
+  },
+  {
+    "name": "rho_above_08",
+    "function": "rho",
+    "inputs": {
+      "chi": 1.0,
+      "lr": 0.8001
+    },
+    "expected": 0.092992788,
+    "how_obtained": "4*0.09303*(1.05-0.8001)=0.09303*0.9996."
+  },
+  {
+    "name": "rho_taper_middle",
+    "function": "rho",
+    "inputs": {
+      "chi": 1.0,
+      "lr": 1.0
+    },
+    "expected": 0.018606,
+    "how_obtained": "4*0.09303*0.05=0.018606."
+  },
+  {
+    "name": "rho_below_105",
+    "function": "rho",
+    "inputs": {
+      "chi": 1.0,
+      "lr": 1.0499
+    },
+    "expected": 3.7212E-05,
+    "how_obtained": "4*0.09303*0.0001."
+  },
+  {
+    "name": "rho_at_105",
+    "function": "rho",
+    "inputs": {
+      "chi": 1.0,
+      "lr": 1.05
+    },
+    "expected": 0.0,
+    "how_obtained": "The Lr>=1.05 row includes equality."
+  },
+  {
+    "name": "rho_above_105",
+    "function": "rho",
+    "inputs": {
+      "chi": 1.0,
+      "lr": 1.0501
+    },
+    "expected": 0.0,
+    "how_obtained": "Above the taper endpoint."
+  },
+  {
+    "name": "rho_large_chi",
+    "function": "rho",
+    "inputs": {
+      "chi": 6.0,
+      "lr": 0.5
+    },
+    "expected": 0.25,
+    "how_obtained": "chi>5.2 gives rho1=0.25, and Lr<=0.8."
+  },
+  {
+    "name": "rho_just_below_chi_break_with_zero_taper",
+    "function": "rho",
+    "inputs": {
+      "chi": 5.1999,
+      "lr": 1.05
+    },
+    "expected": 0.0,
+    "how_obtained": "The polynomial chi branch is selected, but the Lr>=1.05 row makes rho zero."
+  },
+  {
+    "name": "rho_just_above_chi_break_with_zero_taper",
+    "function": "rho",
+    "inputs": {
+      "chi": 5.2001,
+      "lr": 1.05
+    },
+    "expected": 0.0,
+    "how_obtained": "The constant chi branch is selected, but the Lr>=1.05 row makes rho zero."
+  },
+  {
+    "name": "v_first_arm",
+    "function": "v_factor",
+    "inputs": {
+      "chi": 1.0,
+      "lr": 0.8
+    },
+    "expected": 1.212,
+    "how_obtained": "min(1+0.16+0.02*2.6,3.1-1.6)=min(1.212,1.5)."
+  },
+  {
+    "name": "v_second_arm",
+    "function": "v_factor",
+    "inputs": {
+      "chi": 1.0,
+      "lr": 1.0
+    },
+    "expected": 1.1,
+    "how_obtained": "min(1.26,1.1)=1.1."
+  },
+  {
+    "name": "v_below_105",
+    "function": "v_factor",
+    "inputs": {
+      "chi": 1.0,
+      "lr": 1.0499
+    },
+    "expected": 1.0002,
+    "how_obtained": "The second arm is smaller: 3.1-2*1.0499."
+  },
+  {
+    "name": "v_above_105",
+    "function": "v_factor",
+    "inputs": {
+      "chi": 1.0,
+      "lr": 1.0501
+    },
+    "expected": 1.0,
+    "how_obtained": "The Lr>1.05 row gives V=1."
+  },
+  {
+    "name": "v_chi_below_52",
+    "function": "v_factor",
+    "inputs": {
+      "chi": 5.1999,
+      "lr": 0.0
+    },
+    "expected": 1.103998,
+    "how_obtained": "min(1+0.02*5.1999,3.1)."
+  },
+  {
+    "name": "v_chi_above_52",
+    "function": "v_factor",
+    "inputs": {
+      "chi": 5.2001,
+      "lr": 0.0
+    },
+    "expected": 1.104002,
+    "how_obtained": "min(1+0.02*5.2001,3.1); V itself has no breakpoint at chi=5.2."
+  },
+  {
+    "name": "secondary_plane_stress",
+    "function": "kj_secondary",
+    "inputs": {
+      "ks": 1.0,
+      "a": 0.15915494309189535,
+      "sy": 1.0,
+      "beta": 1.0
+    },
+    "expected": 1.4142135623730951,
+    "how_obtained": "a=1/(2*pi), so the plastic increment equals a and a_eff/a=2."
+  },
+  {
+    "name": "secondary_plane_strain",
+    "function": "kj_secondary",
+    "inputs": {
+      "ks": 1.0,
+      "a": 0.05305164769729845,
+      "sy": 1.0,
+      "beta": 3.0
+    },
+    "expected": 1.4142135623730951,
+    "how_obtained": "a=1/(6*pi), so with beta=3 the increment again equals a."
+  },
+  {
+    "name": "kr_rho_combined",
+    "function": "kr",
+    "inputs": {
+      "kp": 2.0,
+      "ks": 2.0,
+      "lr": 1.0,
+      "kmat": 10.0,
+      "a": 1.0,
+      "sy": 1.0
+    },
+    "expected": 0.418606,
+    "how_obtained": "chi=1; Kr=4/10+0.018606."
+  },
+  {
+    "name": "kr_v_combined",
+    "function": "kr",
+    "inputs": {
+      "kp": 2.0,
+      "ks": 2.0,
+      "lr": 1.0,
+      "kmat": 10.0,
+      "a": 1.0,
+      "sy": 1.0,
+      "method": "V"
+    },
+    "expected": 0.42,
+    "how_obtained": "chi=1, V=1.1; (2+1.1*2)/10."
+  },
+  {
+    "name": "kr_negative_secondary_rho",
+    "function": "kr",
+    "inputs": {
+      "kp": 2.0,
+      "ks": -3.0,
+      "lr": 0.5,
+      "kmat": 10.0,
+      "a": 1.0,
+      "sy": 1.0
+    },
+    "expected": 0.2,
+    "how_obtained": "Negative Ks is set to zero and rho to zero."
+  },
+  {
+    "name": "kr_negative_secondary_v",
+    "function": "kr",
+    "inputs": {
+      "kp": 2.0,
+      "ks": -3.0,
+      "lr": 0.5,
+      "kmat": 10.0,
+      "a": 1.0,
+      "sy": 1.0,
+      "method": "V"
+    },
+    "expected": 0.2,
+    "how_obtained": "Negative Ks is set to zero and V to one."
+  },
+  {
+    "name": "kr_zero_secondary",
+    "function": "kr",
+    "inputs": {
+      "kp": 2.0,
+      "ks": 0.0,
+      "lr": 1.05,
+      "kmat": 10.0,
+      "a": 1.0,
+      "sy": 1.0,
+      "method": "V"
+    },
+    "expected": 0.2,
+    "how_obtained": "Ks=0 bypasses chi and V entirely: Kp/Kmat."
+  },
+  {
+    "name": "kr_secondary_only_rho",
+    "function": "kr",
+    "inputs": {
+      "kp": 0.0,
+      "ks": 1.0,
+      "lr": 0.0,
+      "kmat": 1.4142135623730951,
+      "a": 0.15915494309189535,
+      "sy": 1.0
+    },
+    "expected": 1.0,
+    "how_obtained": "KJs=sqrt(2) and Kmat=sqrt(2); the secondary-only row bypasses chi."
+  },
+  {
+    "name": "kr_secondary_only_v_plane_strain",
+    "function": "kr",
+    "inputs": {
+      "kp": 0.0,
+      "ks": 1.0,
+      "lr": 0.0,
+      "kmat": 1.4142135623730951,
+      "a": 0.05305164769729845,
+      "sy": 1.0,
+      "method": "V",
+      "beta": 3.0
+    },
+    "expected": 1.0,
+    "how_obtained": "With beta=3, a_eff=2a; KJs/Kmat=1."
+  },
+  {
+    "name": "surface_low_aspect_deepest_thin_limit",
+    "function": "surface_mm_mb",
+    "inputs": {
+      "a": 1.0,
+      "c": 1.0,
+      "B": 1E+18,
+      "theta": 1.5707963267948966
+    },
+    "expected": [
+      0.662541348868908,
+      0.662541348868908
+    ],
+    "how_obtained": "a/c=1, x=1e-18: M1=1.04, Phi=sqrt(2.464), g=f_theta=H=1 to displayed precision. Thus both factors are 1.04/sqrt(2.464)."
+  },
+  {
+    "name": "surface_low_aspect_surface_thin_limit",
+    "function": "surface_mm_mb",
+    "inputs": {
+      "a": 1.0,
+      "c": 1.0,
+      "B": 1E+18,
+      "theta": 0.0
+    },
+    "expected": [
+      0.728795483755799,
+      0.728795483755799
+    ],
+    "how_obtained": "As in the preceding thin-limit calculation, but g=1.1; multiply 1.04/sqrt(2.464) by 1.1."
+  },
+  {
+    "name": "surface_low_aspect_intermediate_thin_limit",
+    "function": "surface_mm_mb",
+    "inputs": {
+      "a": 1.0,
+      "c": 1.0,
+      "B": 1E+18,
+      "theta": 0.5235987755982988
+    },
+    "expected": [
+      0.679104882590631,
+      0.679104882590631
+    ],
+    "how_obtained": "sin(theta)=1/2, hence g=1+0.1*(1/2)^2=1.025; H=1 to displayed precision."
+  },
+  {
+    "name": "surface_high_aspect_deepest_thin_limit",
+    "function": "surface_mm_mb",
+    "inputs": {
+      "a": 1.0,
+      "c": 0.999999999999999,
+      "B": 1E+18,
+      "theta": 1.5707963267948966
+    },
+    "expected": [
+      0.662541348868908,
+      0.662541348868908
+    ],
+    "how_obtained": "a/c is strictly above one, selecting the second aspect branch. c/a differs from one by about 1e-15; with x=1e-18 the result differs from 1.04/sqrt(2.464) only beyond the displayed precision."
+  },
+  {
+    "name": "surface_high_aspect_surface_thin_limit",
+    "function": "surface_mm_mb",
+    "inputs": {
+      "a": 1.0,
+      "c": 0.999999999999999,
+      "B": 1E+18,
+      "theta": 0.0
+    },
+    "expected": [
+      0.728795483755799,
+      0.728795483755799
+    ],
+    "how_obtained": "Second aspect branch, z=c/a approximately one; g=1.1 and H approximately one. Corrections are below 1e-14."
+  },
+  {
+    "name": "surface_high_aspect_intermediate_thin_limit",
+    "function": "surface_mm_mb",
+    "inputs": {
+      "a": 1.0,
+      "c": 0.999999999999999,
+      "B": 1E+18,
+      "theta": 0.5235987755982988
+    },
+    "expected": [
+      0.679104882590631,
+      0.679104882590631
+    ],
+    "how_obtained": "Second aspect branch; z approximately one, sin(theta)=1/2, and g=1.025 to displayed precision."
+  },
+  {
+    "name": "surface_low_aspect_finite_depth_deepest",
+    "function": "surface_mm_mb",
+    "inputs": {
+      "a": 0.5,
+      "c": 0.5,
+      "B": 1.0,
+      "theta": 1.5707963267948966
+    },
+    "expected": [
+      0.690436810672975,
+      0.222665871442034
+    ],
+    "how_obtained": "r=1, x=1/2: M2=121/600, M3=-7/66, and M1+M2/4+M3/16=7153/6600. Mm=(7153/6600)/sqrt(2.464). H2=1-1.34/2-0.03/4=0.3225; Mb=0.3225*Mm."
+  },
+  {
+    "name": "surface_low_aspect_finite_depth_surface",
+    "function": "surface_mm_mb",
+    "inputs": {
+      "a": 0.5,
+      "c": 0.5,
+      "B": 1.0,
+      "theta": 0.0
+    },
+    "expected": [
+      0.819893712674158,
+      0.635417627322473
+    ],
+    "how_obtained": "The same base coefficient as the preceding case is multiplied by g=1+0.1+0.35/4=1.1875. H1=1-0.45/2=0.775; Mb=0.775*Mm."
+  },
+  {
+    "name": "surface_width_factor",
+    "function": "surface_fw",
+    "inputs": {
+      "a": 0.5625,
+      "c": 1.0,
+      "B": 1.0,
+      "W": 3.0
+    },
+    "expected": 1.189207115002721,
+    "how_obtained": "sqrt(a/B)=3/4 and c/W=1/3, giving argument pi/4; sqrt(sec(pi/4))=2^(1/4)."
+  },
+  {
+    "name": "surface_reference_wide_normal",
+    "function": "surface_sref",
+    "inputs": {
+      "pm": 3.0,
+      "pb": 0.0,
+      "a": 0.5,
+      "c": 1.0,
+      "B": 1.0,
+      "W": 5.0
+    },
+    "expected": 4.0,
+    "how_obtained": "Wide branch gives al=1/4. With Pb=0 and Pm positive, normal sref=Pm/(1-al)=3/(3/4)."
+  },
+  {
+    "name": "surface_reference_width_boundary",
+    "function": "surface_sref",
+    "inputs": {
+      "pm": 3.0,
+      "pb": 0.0,
+      "a": 0.5,
+      "c": 1.0,
+      "B": 1.0,
+      "W": 4.0
+    },
+    "expected": 4.0,
+    "how_obtained": "W=2(c+B) selects the wide row; al=1/4 and sref=4."
+  },
+  {
+    "name": "surface_reference_narrow_normal",
+    "function": "surface_sref",
+    "inputs": {
+      "pm": 5.0,
+      "pb": 0.0,
+      "a": 0.5,
+      "c": 1.0,
+      "B": 1.0,
+      "W": 3.0
+    },
+    "expected": 7.5,
+    "how_obtained": "Narrow row gives al=(1/2)*(2/3)=1/3; sref=5/(2/3)=7.5."
+  },
+  {
+    "name": "surface_reference_pin_jointed",
+    "function": "surface_sref",
+    "inputs": {
+      "pm": 2.0,
+      "pb": 0.0,
+      "a": 0.5714285714285714,
+      "c": 3.0,
+      "B": 1.0,
+      "W": 8.0,
+      "pin_jointed": true
+    },
+    "expected": 7.0,
+    "how_obtained": "al=(4/7)/(4/3)=3/7. For Pb=0, pin-jointed sref=Pm*(al+sqrt(al^2+(1-al)^2))/(1-al)^2=2*(8/7)/(16/49)=7."
+  },
+  {
+    "name": "surface_reference_same_geometry_normal",
+    "function": "surface_sref",
+    "inputs": {
+      "pm": 2.0,
+      "pb": 0.0,
+      "a": 0.5714285714285714,
+      "c": 3.0,
+      "B": 1.0,
+      "W": 8.0
+    },
+    "expected": 3.5,
+    "how_obtained": "al=3/7; normal sref=2/(4/7)=3.5."
+  },
+  {
+    "name": "surface_reference_pin_pure_bending",
+    "function": "surface_sref",
+    "inputs": {
+      "pm": 0.0,
+      "pb": 3.0,
+      "a": 0.5,
+      "c": 1.0,
+      "B": 1.0,
+      "W": 4.0,
+      "pin_jointed": true
+    },
+    "expected": 3.5555555555555554,
+    "how_obtained": "al=1/4; numerator=6 and denominator=3*(3/4)^2=27/16, giving 32/9."
+  },
+  {
+    "name": "through_width_quarter",
+    "function": "through_fw",
+    "inputs": {
+      "a": 1.0,
+      "W": 4.0
+    },
+    "expected": 1.189207115002721,
+    "how_obtained": "sqrt(sec(pi/4))=2^(1/4)."
+  },
+  {
+    "name": "through_width_third",
+    "function": "through_fw",
+    "inputs": {
+      "a": 1.0,
+      "W": 3.0
+    },
+    "expected": 1.4142135623730951,
+    "how_obtained": "cos(pi/3)=1/2, so sqrt(sec(pi/3))=sqrt(2)."
+  },
+  {
+    "name": "through_reference_membrane",
+    "function": "through_sref",
+    "inputs": {
+      "pm": 1.0,
+      "pb": 0.0,
+      "a": 1.0,
+      "W": 4.0
+    },
+    "expected": 2.0,
+    "how_obtained": "Numerator=3; denominator=3*(1-1/2)=1.5."
+  },
+  {
+    "name": "through_reference_bending",
+    "function": "through_sref",
+    "inputs": {
+      "pm": 0.0,
+      "pb": 3.0,
+      "a": 1.0,
+      "W": 4.0
+    },
+    "expected": 4.0,
+    "how_obtained": "Numerator=3+3=6; denominator=1.5."
+  },
+  {
+    "name": "through_reference_negative_bending_literal",
+    "function": "through_sref",
+    "inputs": {
+      "pm": 0.0,
+      "pb": -3.0,
+      "a": 1.0,
+      "W": 4.0
+    },
+    "expected": 0.0,
+    "how_obtained": "Literal signed formula has numerator -3+sqrt(9)=0."
+  },
+  {
+    "name": "intensity_primary_secondary",
+    "function": "k_primary_secondary",
+    "inputs": {
+      "a": 0.3183098861837907,
+      "mm": 3.0,
+      "mb": 4.0,
+      "fw": 2.0,
+      "pm": 5.0,
+      "pb": 6.0,
+      "qm": 7.0,
+      "qb": 8.0
+    },
+    "expected": [
+      78.0,
+      53.0
+    ],
+    "how_obtained": "a=1/pi makes sqrt(pi*a)=1. Kp=2*(3*5+4*6)=78; Ks=3*7+4*8=53, without fw on Ks."
+  },
+  {
+    "name": "intensity_secondary_signed",
+    "function": "k_primary_secondary",
+    "inputs": {
+      "a": 0.3183098861837907,
+      "mm": 3.0,
+      "mb": 4.0,
+      "fw": 2.0,
+      "pm": 0.0,
+      "pb": 0.0,
+      "qm": -7.0,
+      "qb": -8.0
+    },
+    "expected": [
+      0.0,
+      -53.0
+    ],
+    "how_obtained": "The intensity function does not clamp secondary stress: Ks=3*(-7)+4*(-8)=-53."
+  },
+  {
+    "name": "radial_origin",
+    "function": "radial_margin",
+    "inputs": {
+      "lr": 0.0,
+      "kr_value": 0.0,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 0.0
+    },
+    "expected": "Infinity",
+    "how_obtained": "The specified origin margin is positive infinity. The JSON number 1e999 overflows to positive infinity when parsed as a Python float."
+  },
+  {
+    "name": "radial_vertical_axis",
+    "function": "radial_margin",
+    "inputs": {
+      "lr": 0.0,
+      "kr_value": 0.25,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 0.0
+    },
+    "expected": 4.0,
+    "how_obtained": "Along Lr=0, f=1. First exit occurs at t*0.25=1."
+  },
+  {
+    "name": "radial_horizontal_axis",
+    "function": "radial_margin",
+    "inputs": {
+      "lr": 0.5,
+      "kr_value": 0.0,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 0.0
+    },
+    "expected": 4.0,
+    "how_obtained": "Kr stays zero while the curve is positive; first exit is the cutoff t*0.5=2."
+  },
+  {
+    "name": "radial_curve_at_one",
+    "function": "radial_margin",
+    "inputs": {
+      "lr": 1.0,
+      "kr_value": 0.816496580927726,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 0.0
+    },
+    "expected": 1.0,
+    "how_obtained": "The supplied point is (1,sqrt(2/3)), exactly on the continuous curve with mu=0."
+  },
+  {
+    "name": "radial_curve_scaled_ray",
+    "function": "radial_margin",
+    "inputs": {
+      "lr": 0.5,
+      "kr_value": 0.408248290463863,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 0.0
+    },
+    "expected": 2.0,
+    "how_obtained": "Doubling the point gives (1,sqrt(2/3)), the first curve intersection."
+  },
+  {
+    "name": "radial_curve_upper_branch",
+    "function": "radial_margin",
+    "inputs": {
+      "lr": 1.25,
+      "kr_value": 0.5225578117937447,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 0.0
+    },
+    "expected": 1.0,
+    "how_obtained": "N=0.2; Kr=sqrt(2/3)/1.25^2, so the point is on the upper curve."
+  },
+  {
+    "name": "radial_cutoff_nonzero_kr",
+    "function": "radial_margin",
+    "inputs": {
+      "lr": 1.0,
+      "kr_value": 0.01,
+      "sy": 1.0,
+      "su": 3.0,
+      "E": 0.0
+    },
+    "expected": 2.0,
+    "how_obtained": "Immediately below Lr=2 the curve tends to sqrt(2/3)/4 approximately 0.2041241452, whereas ray Kr tends to 0.02. The first exit is the cutoff."
+  },
+  {
+    "name": "radial_discontinuous_first_exit_jump",
+    "function": "radial_margin",
+    "inputs": {
+      "lr": 1.0,
+      "kr_value": 0.5,
+      "sy": 400000000.0,
+      "su": 600000000.0,
+      "E": 200000000000.0,
+      "discontinuous": true
+    },
+    "expected": 1.0,
+    "how_obtained": "Default delta_eps=0.0225 and lambda=12.25. Below Lr=1 the limiting curve is sqrt(2/3)>0.5; at one it becomes (12.25+1/24.5)^(-1/2)<0.5. First exit is t=1."
+  },
+  {
+    "name": "radial_discontinuous_horizontal_axis",
+    "function": "radial_margin",
+    "inputs": {
+      "lr": 0.5,
+      "kr_value": 0.0,
+      "sy": 400000000.0,
+      "su": 600000000.0,
+      "E": 200000000000.0,
+      "discontinuous": true
+    },
+    "expected": 2.5,
+    "how_obtained": "The jump remains above zero, so the first exit is Lr_max=1.25, reached at t=1.25/0.5."
+  },
+  {
+    "name": "assessment_zero_load_rho",
+    "function": "assess_surface",
+    "inputs": {
+      "B": 1.0,
+      "W": 4.0,
+      "a": 0.5,
+      "two_c": 1.0,
+      "sy": 400000000.0,
+      "su": 600000000.0,
+      "E": 200000000000.0,
+      "kmat": 100000000.0,
+      "pm": 0.0,
+      "pb": 0.0,
+      "qm": 0.0,
+      "qb": 0.0
+    },
+    "expected": {
+      "lr": 0.0,
+      "kr_deepest": 0.0,
+      "kr_surface": 0.0,
+      "F": "Infinity"
+    },
+    "how_obtained": "Zero loads give sref=Kp=Ks=0 at both positions. Each assessment point is the origin and has infinite radial margin."
+  },
+  {
+    "name": "assessment_zero_load_v_pin",
+    "function": "assess_surface",
+    "inputs": {
+      "B": 1.0,
+      "W": 4.0,
+      "a": 0.5,
+      "two_c": 1.0,
+      "sy": 400000000.0,
+      "su": 600000000.0,
+      "E": 200000000000.0,
+      "kmat": 100000000.0,
+      "pm": 0.0,
+      "pb": 0.0,
+      "qm": 0.0,
+      "qb": 0.0,
+      "method": "V",
+      "pin_jointed": true
+    },
+    "expected": {
+      "lr": 0.0,
+      "kr_deepest": 0.0,
+      "kr_surface": 0.0,
+      "F": "Infinity"
+    },
+    "how_obtained": "With zero loads, changing restraint and interaction method leaves both points at the origin."
+  }
+]

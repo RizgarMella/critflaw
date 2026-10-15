@@ -1,0 +1,877 @@
+{
+  "reference_implementation": "\"\"\"Independent fatigue-growth oracle; standard-library math only.\n\nAll public numerical functions return Python floats, except life_fixed_step,\nwhich raises because the supplied specification does not determine a cycle\nstep or a unique numerical result. No cycle increment is silently invented.\n\nUnits:\n  rate_mm_per_cycle: dK in N/mm**(3/2), rate in mm/cycle.\n  to_si: coefficient for dK in Pa*sqrt(m), rate in m/cycle.\n  cycles_through_crack: lengths in m and stress range in Pa.\n\nNewman-Raju surface-flaw equations used by surface_flaw_dk, for 0 < a/c <= 1:\n  r = a/c; u = a/B\n  Q = 1 + 1.464*r**1.65\n  M1 = 1.13 - 0.09*r\n  M2 = -0.54 + 0.89/(0.2 + r)\n  M3 = 0.5 - 1/(0.65 + r) + 14*(1-r)**24\n  g = 1 + (0.1 + 0.35*u**2)*(1-sin(phi))**2\n  f_phi = (r**2*cos(phi)**2 + sin(phi)**2)**0.25\n  f_w = sqrt(sec(pi*c/W*sqrt(u)))\n  F = (M1 + M2*u**2 + M3*u**4)*g*f_phi*f_w\n  H1 = 1 - 0.34*u - 0.11*r*u\n  G1 = -1.22 - 0.12*r\n  G2 = 0.55 - 1.05*r**0.75 + 0.47*r**1.5\n  H2 = 1 + G1*u + G2*u**2\n  p = 0.2 + r + 0.6*u\n  H = H1 + (H2-H1)*sin(phi)**p\n  dK = (dsm + H*dsb)*sqrt(pi*a/Q)*F\nHere W is the full plate width. The deepest point has phi=pi/2 and\nsurface point phi=0. No extrapolation to a/c>1 is supplied.\nReference: Newman and Raju, Engineering Fracture Mechanics 15 (1981),\n185-192. These equations include bending's H factor, not just the\nmembrane geometrical correction.\n\nCase representation:\n  inputs.function names the callable; inputs.arguments is its positional\n  argument list. An expected object with transform='log10' specifies the\n  base-10 logarithm of the returned scalar. This avoids discarding accuracy\n  when tabulating extremely small coefficients and supplies a directly\n  executable scalar oracle. Values without a transform are direct outputs.\n  oracle_matches implements this convention, including expected exceptions.\n\"\"\"\n\nimport math\n\nLIFE_AMBIGUITY = 'life_fixed_step is underdetermined: supply a cycle increment or an explicit rule for selecting it'\n\nCATALOGUE = {\n    'air': {\n        'low_mean': ((1.21e-26, 8.16), (3.98e-13, 2.88)),\n        'low_upper': ((4.37e-26, 8.16), (6.77e-13, 2.88)),\n        'high_mean': ((4.80e-18, 5.10), (5.86e-13, 2.88)),\n        'high_upper': ((2.10e-17, 5.10), (1.29e-12, 2.88)),\n    },\n    'freely_corroding': {\n        'low_mean': ((3.0e-14, 3.42), (1.27e-7, 1.30)),\n        'low_upper': ((8.55e-14, 3.42), (1.93e-7, 1.30)),\n        'high_mean': ((5.37e-14, 3.42), (5.67e-7, 1.11)),\n        'high_upper': ((1.72e-13, 3.42), (7.48e-7, 1.11)),\n    },\n    'cp_850': {\n        'low_mean': ((1.21e-26, 8.16), (5.16e-12, 2.67)),\n        'low_upper': ((4.37e-26, 8.16), (1.32e-11, 2.67)),\n        'high_mean': ((4.80e-18, 5.10), (6.0e-12, 2.67)),\n        'high_upper': ((2.10e-17, 5.10), (2.02e-11, 2.67)),\n    },\n    'cp_1100': {\n        'low_mean': ((1.21e-26, 8.16), (5.51e-8, 1.40)),\n        'low_upper': ((4.37e-26, 8.16), (9.24e-8, 1.40)),\n        'high_mean': ((4.80e-18, 5.10), (5.25e-8, 1.40)),\n        'high_upper': ((2.10e-17, 5.10), (1.02e-7, 1.40)),\n    },\n}\n\nSD_LOG10 = {\n    'air': (0.279, 0.320, 0.115, 0.171),\n    'freely_corroding': (0.227, 0.253, 0.091, 0.060),\n    'cp_850': (0.279, 0.320, 0.204, 0.264),\n    'cp_1100': (0.279, 0.320, 0.112, 0.144),\n}\n\n\ndef _finite(x, name):\n    x = float(x)\n    if not math.isfinite(x):\n        raise ValueError(name + ' must be finite')\n    return x\n\n\ndef _positive(x, name):\n    x = _finite(x, name)\n    if x <= 0.0:\n        raise ValueError(name + ' must be positive')\n    return x\n\n\ndef _stages(stages):\n    if len(stages) not in (1, 2):\n        raise ValueError('stages must contain one or two pairs')\n    out = tuple((_positive(A, 'A'), _positive(m, 'm')) for A, m in stages)\n    if len(out) == 2 and out[0][1] <= out[1][1]:\n        raise ValueError('two-stage law requires m_A > m_B')\n    return out\n\n\ndef rate_mm_per_cycle(dk_nmm, stages, dk0):\n    dk = _finite(dk_nmm, 'dk_nmm')\n    threshold = _finite(dk0, 'dk0')\n    pairs = _stages(stages)\n    if dk < 0.0 or threshold < 0.0:\n        raise ValueError('dK and threshold must be nonnegative')\n    if dk < threshold:\n        return 0.0\n    return float(min(A * dk**m for A, m in pairs))\n\n\ndef transition_point(A_a, m_a, A_b, m_b):\n    A_a = _positive(A_a, 'A_a')\n    A_b = _positive(A_b, 'A_b')\n    m_a = _positive(m_a, 'm_a')\n    m_b = _positive(m_b, 'm_b')\n    if m_a <= m_b:\n        raise ValueError('transition requires m_a > m_b')\n    return float((A_b / A_a)**(1.0 / (m_a - m_b)))\n\n\ndef upper_from_mean(A_mean, sd_log10):\n    A_mean = _positive(A_mean, 'A_mean')\n    sd = _finite(sd_log10, 'sd_log10')\n    if sd < 0.0:\n        raise ValueError('standard deviation must be nonnegative')\n    return float(A_mean * 10.0**(2.0 * sd))\n\n\ndef to_si(A_nmm, m):\n    A_nmm = _positive(A_nmm, 'A_nmm')\n    m = _positive(m, 'm')\n    # 1 N/mm**(3/2) = 10**4.5 Pa*sqrt(m); 1 mm = 10**-3 m.\n    return float(A_nmm * 10.0**(-3.0 - 4.5 * m))\n\n\ndef threshold_unwelded_steel(R):\n    R = _finite(R, 'R')\n    if R < 0.0:\n        return 170.0\n    if R < 0.5:\n        return float(170.0 - 214.0 * R)\n    return 63.0\n\n\ndef cycles_through_crack(a_i, a_f, dsigma, A, m):\n    a_i = _positive(a_i, 'a_i')\n    a_f = _positive(a_f, 'a_f')\n    dsigma = _positive(dsigma, 'dsigma')\n    A = _positive(A, 'A')\n    m = _positive(m, 'm')\n    if a_f < a_i:\n        raise ValueError('a_f must be at least a_i')\n    if a_f == a_i:\n        return 0.0\n    prefactor = A * dsigma**m * math.pi**(m / 2.0)\n    if m == 2.0:\n        return float(math.log(a_f / a_i) / prefactor)\n    q = 1.0 - m / 2.0\n    # Algebraically (a_f**q-a_i**q)/q; expm1 avoids near-m=2 cancellation.\n    integral = a_i**q * math.expm1(q * math.log(a_f / a_i)) / q\n    return float(integral / prefactor)\n\n\ndef surface_flaw_dk(a, c, B, W, dsm, dsb, phi):\n    a = _positive(a, 'a')\n    c = _positive(c, 'c')\n    B = _positive(B, 'B')\n    W = _positive(W, 'W')\n    dsm = _finite(dsm, 'dsm')\n    dsb = _finite(dsb, 'dsb')\n    phi = _finite(phi, 'phi')\n    if not (a <= c and a < B and 0.0 <= phi <= math.pi / 2.0):\n        raise ValueError('requires a <= c, a < B, and 0 <= phi <= pi/2')\n    r, u = a / c, a / B\n    width_angle = math.pi * c / W * math.sqrt(u)\n    if width_angle >= math.pi / 2.0:\n        raise ValueError('finite-width correction is outside its real branch')\n    Q = 1.0 + 1.464 * r**1.65\n    M1 = 1.13 - 0.09 * r\n    M2 = -0.54 + 0.89 / (0.2 + r)\n    M3 = 0.5 - 1.0 / (0.65 + r) + 14.0 * (1.0 - r)**24\n    s, co = math.sin(phi), math.cos(phi)\n    g = 1.0 + (0.1 + 0.35 * u*u) * (1.0 - s)**2\n    f_phi = (r*r*co*co + s*s)**0.25\n    f_w = math.sqrt(1.0 / math.cos(width_angle))\n    F = (M1 + M2*u*u + M3*u**4) * g * f_phi * f_w\n    H1 = 1.0 - 0.34*u - 0.11*r*u\n    G1 = -1.22 - 0.12*r\n    G2 = 0.55 - 1.05*r**0.75 + 0.47*r**1.5\n    H2 = 1.0 + G1*u + G2*u*u\n    p = 0.2 + r + 0.6*u\n    H = H1 + (H2 - H1) * s**p\n    return float((dsm + H*dsb) * math.sqrt(math.pi*a/Q) * F)\n\n\ndef surface_growth_rates_si(a, c, B, W, dsm, dsb, stages, dk0):\n    pairs_si = tuple((to_si(A, m), m) for A, m in _stages(stages))\n    threshold_si = _finite(dk0, 'dk0') * 10.0**4.5\n    if threshold_si < 0.0:\n        raise ValueError('threshold must be nonnegative')\n    def growth(phi):\n        dk = surface_flaw_dk(a, c, B, W, dsm, dsb, phi)\n        if dk < threshold_si:\n            return 0.0\n        return float(min(A * dk**m for A, m in pairs_si))\n    return growth(math.pi / 2.0), growth(0.0)\n\n\ndef life_fixed_step(a0, c0, B, W, dsm, dsb, stages, dk0, n_steps, a_target):\n    # Euler needs delta_N. Knowing a first-crossing step count imposes\n    # inequalities, not a unique delta_N. Requiring exact final depth would\n    # add an unstated shooting condition. Therefore neither is assumed.\n    raise ValueError(LIFE_AMBIGUITY)\n\n\ndef oracle_matches(function_name, arguments, expected, rtol=2e-10, atol=1e-12):\n    function = globals()[function_name]\n    try:\n        result = function(*arguments)\n    except Exception as exc:\n        return (expected.get('error_type') == type(exc).__name__\n                and expected.get('message') == str(exc))\n    if 'error_type' in expected:\n        return False\n    if expected.get('transform') == 'log10':\n        if result <= 0.0:\n            return False\n        result = math.log10(result)\n    return math.isclose(float(result), float(expected['value']),\n                        rel_tol=rtol, abs_tol=atol)\n",
+  "cases": [
+    {
+      "name": "transition_air_low_mean",
+      "inputs": {
+        "function": "transition_point",
+        "arguments": [
+          1.21e-26,
+          8.16,
+          3.98e-13,
+          2.88
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": 2.56005638290856
+      },
+      "how_obtained": "log10(dk_t) = (log10(3.98e-13)-log10(1.21e-26))/5.28 = 13.5170977017572/5.28."
+    },
+    {
+      "name": "transition_air_low_upper",
+      "inputs": {
+        "function": "transition_point",
+        "arguments": [
+          4.37e-26,
+          8.16,
+          6.77e-13,
+          2.88
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": 2.49812636964294
+      },
+      "how_obtained": "log10(dk_t) = 13.1901072317147/5.28."
+    },
+    {
+      "name": "transition_air_high_mean",
+      "inputs": {
+        "function": "transition_point",
+        "arguments": [
+          4.8e-18,
+          5.1,
+          5.86e-13,
+          2.88
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": 2.29128665704617
+      },
+      "how_obtained": "log10(dk_t) = 5.08665637864250/2.22."
+    },
+    {
+      "name": "transition_air_high_upper",
+      "inputs": {
+        "function": "transition_point",
+        "arguments": [
+          2.1e-17,
+          5.1,
+          1.29e-12,
+          2.88
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": 2.15692361061501
+      },
+      "how_obtained": "log10(dk_t) = 4.78837041556533/2.22."
+    },
+    {
+      "name": "transition_freely_corroding_low_mean",
+      "inputs": {
+        "function": "transition_point",
+        "arguments": [
+          3e-14,
+          3.42,
+          1.27e-07,
+          1.3
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": 3.1257936161492
+      },
+      "how_obtained": "log10(dk_t) = 6.62668246623630/2.12."
+    },
+    {
+      "name": "transition_freely_corroding_low_upper",
+      "inputs": {
+        "function": "transition_point",
+        "arguments": [
+          8.55e-14,
+          3.42,
+          1.93e-07,
+          1.3
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": 2.99697697843377
+      },
+      "how_obtained": "log10(dk_t) = 6.35359119427960/2.12."
+    },
+    {
+      "name": "transition_freely_corroding_high_mean",
+      "inputs": {
+        "function": "transition_point",
+        "arguments": [
+          5.37e-14,
+          3.42,
+          5.67e-07,
+          1.11
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": 3.04052327843868
+      },
+      "how_obtained": "log10(dk_t) = 7.02360877319335/2.31."
+    },
+    {
+      "name": "transition_freely_corroding_high_upper",
+      "inputs": {
+        "function": "transition_point",
+        "arguments": [
+          1.72e-13,
+          3.42,
+          7.48e-07,
+          1.11
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": 3.30665504370429
+      },
+      "how_obtained": "log10(dk_t) = 7.63837315095690/2.31."
+    },
+    {
+      "name": "transition_cp850_low_mean",
+      "inputs": {
+        "function": "transition_point",
+        "arguments": [
+          1.21e-26,
+          8.16,
+          5.16e-12,
+          2.67
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": 2.66482046107665
+      },
+      "how_obtained": "log10(dk_t) = 14.6298643313108/5.49."
+    },
+    {
+      "name": "transition_cp850_low_upper",
+      "inputs": {
+        "function": "transition_point",
+        "arguments": [
+          4.37e-26,
+          8.16,
+          1.32e-11,
+          2.67
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": 2.63753961643632
+      },
+      "how_obtained": "log10(dk_t) = 14.4800924942354/5.49."
+    },
+    {
+      "name": "transition_cp850_high_mean",
+      "inputs": {
+        "function": "transition_point",
+        "arguments": [
+          4.8e-18,
+          5.1,
+          6e-12,
+          2.67
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": 2.50901646625846
+      },
+      "how_obtained": "log10(dk_t) = 6.09691001300805/2.43."
+    },
+    {
+      "name": "transition_cp850_high_upper",
+      "inputs": {
+        "function": "transition_point",
+        "arguments": [
+          2.1e-17,
+          5.1,
+          2.02e-11,
+          2.67
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": 2.46219426942909
+      },
+      "how_obtained": "log10(dk_t) = 5.98313207471270/2.43."
+    },
+    {
+      "name": "transition_cp1100_low_mean",
+      "inputs": {
+        "function": "transition_point",
+        "arguments": [
+          1.21e-26,
+          8.16,
+          5.51e-08,
+          1.4
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": 2.76011334741647
+      },
+      "how_obtained": "log10(dk_t) = 18.6583662285353/6.76."
+    },
+    {
+      "name": "transition_cp1100_low_upper",
+      "inputs": {
+        "function": "transition_point",
+        "arguments": [
+          4.37e-26,
+          8.16,
+          9.24e-08,
+          1.4
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": 2.71082699619078
+      },
+      "how_obtained": "log10(dk_t) = 18.3251905342497/6.76."
+    },
+    {
+      "name": "transition_cp1100_high_mean",
+      "inputs": {
+        "function": "transition_point",
+        "arguments": [
+          4.8e-18,
+          5.1,
+          5.25e-08,
+          1.4
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": 2.71322109892713
+      },
+      "how_obtained": "log10(dk_t) = 10.0389180660304/3.70."
+    },
+    {
+      "name": "transition_cp1100_high_upper",
+      "inputs": {
+        "function": "transition_point",
+        "arguments": [
+          2.1e-17,
+          5.1,
+          1.02e-07,
+          1.4
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": 2.61794077757514
+      },
+      "how_obtained": "log10(dk_t) = 9.68638087702800/3.70."
+    },
+    {
+      "name": "upper_air_A_low",
+      "inputs": {
+        "function": "upper_from_mean",
+        "arguments": [
+          1.21e-26,
+          0.279
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -25.3592146296836
+      },
+      "how_obtained": "log10(A_upper) = log10(1.21e-26) + 0.558."
+    },
+    {
+      "name": "upper_air_A_high",
+      "inputs": {
+        "function": "upper_from_mean",
+        "arguments": [
+          4.8e-18,
+          0.32
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -16.6787587626244
+      },
+      "how_obtained": "log10(A_upper) = log10(4.8e-18) + 0.640."
+    },
+    {
+      "name": "upper_air_B_low",
+      "inputs": {
+        "function": "upper_from_mean",
+        "arguments": [
+          3.98e-13,
+          0.115
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -12.1701169279263
+      },
+      "how_obtained": "log10(A_upper) = log10(3.98e-13) + 0.230."
+    },
+    {
+      "name": "upper_air_B_high",
+      "inputs": {
+        "function": "upper_from_mean",
+        "arguments": [
+          5.86e-13,
+          0.171
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -11.8901023839819
+      },
+      "how_obtained": "log10(A_upper) = log10(5.86e-13) + 0.342."
+    },
+    {
+      "name": "upper_freely_corroding_A_low",
+      "inputs": {
+        "function": "upper_from_mean",
+        "arguments": [
+          3e-14,
+          0.227
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -13.0688787452803
+      },
+      "how_obtained": "log10(A_upper) = log10(3e-14) + 0.454."
+    },
+    {
+      "name": "upper_freely_corroding_A_high",
+      "inputs": {
+        "function": "upper_from_mean",
+        "arguments": [
+          5.37e-14,
+          0.253
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -12.7640257143004
+      },
+      "how_obtained": "log10(A_upper) = log10(5.37e-14) + 0.506."
+    },
+    {
+      "name": "upper_freely_corroding_B_low",
+      "inputs": {
+        "function": "upper_from_mean",
+        "arguments": [
+          1.27e-07,
+          0.091
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -6.71419627904404
+      },
+      "how_obtained": "log10(A_upper) = log10(1.27e-7) + 0.182."
+    },
+    {
+      "name": "upper_freely_corroding_B_high",
+      "inputs": {
+        "function": "upper_from_mean",
+        "arguments": [
+          5.67e-07,
+          0.06
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -6.12641694110709
+      },
+      "how_obtained": "log10(A_upper) = log10(5.67e-7) + 0.120."
+    },
+    {
+      "name": "upper_cp850_A_low",
+      "inputs": {
+        "function": "upper_from_mean",
+        "arguments": [
+          1.21e-26,
+          0.279
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -25.3592146296836
+      },
+      "how_obtained": "log10(A_upper) = log10(1.21e-26) + 0.558."
+    },
+    {
+      "name": "upper_cp850_A_high",
+      "inputs": {
+        "function": "upper_from_mean",
+        "arguments": [
+          4.8e-18,
+          0.32
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -16.6787587626244
+      },
+      "how_obtained": "log10(A_upper) = log10(4.8e-18) + 0.640."
+    },
+    {
+      "name": "upper_cp850_B_low",
+      "inputs": {
+        "function": "upper_from_mean",
+        "arguments": [
+          5.16e-12,
+          0.204
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -10.8793502983728
+      },
+      "how_obtained": "log10(A_upper) = log10(5.16e-12) + 0.408."
+    },
+    {
+      "name": "upper_cp850_B_high",
+      "inputs": {
+        "function": "upper_from_mean",
+        "arguments": [
+          6e-12,
+          0.264
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -10.6938487496164
+      },
+      "how_obtained": "log10(A_upper) = log10(6e-12) + 0.528."
+    },
+    {
+      "name": "upper_cp1100_A_low",
+      "inputs": {
+        "function": "upper_from_mean",
+        "arguments": [
+          1.21e-26,
+          0.279
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -25.3592146296836
+      },
+      "how_obtained": "log10(A_upper) = log10(1.21e-26) + 0.558."
+    },
+    {
+      "name": "upper_cp1100_A_high",
+      "inputs": {
+        "function": "upper_from_mean",
+        "arguments": [
+          4.8e-18,
+          0.32
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -16.6787587626244
+      },
+      "how_obtained": "log10(A_upper) = log10(4.8e-18) + 0.640."
+    },
+    {
+      "name": "upper_cp1100_B_low",
+      "inputs": {
+        "function": "upper_from_mean",
+        "arguments": [
+          5.51e-08,
+          0.112
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -7.03484840114821
+      },
+      "how_obtained": "log10(A_upper) = log10(5.51e-8) + 0.224."
+    },
+    {
+      "name": "upper_cp1100_B_high",
+      "inputs": {
+        "function": "upper_from_mean",
+        "arguments": [
+          5.25e-08,
+          0.144
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -6.99184069659404
+      },
+      "how_obtained": "log10(A_upper) = log10(5.25e-8) + 0.288."
+    },
+    {
+      "name": "to_si_air_B_high",
+      "inputs": {
+        "function": "to_si",
+        "arguments": [
+          5.86e-13,
+          2.88
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -28.1921023839819
+      },
+      "how_obtained": "A_SI = A_Nmm*10^(-3-4.5m). Therefore log10(A_SI) = log10(5.86e-13)-15.96."
+    },
+    {
+      "name": "to_si_air_A_low",
+      "inputs": {
+        "function": "to_si",
+        "arguments": [
+          1.21e-26,
+          8.16
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -65.6372146296836
+      },
+      "how_obtained": "log10(A_SI) = log10(1.21e-26)-3-4.5*8.16 = log10(1.21e-26)-39.72."
+    },
+    {
+      "name": "threshold_R_negative",
+      "inputs": {
+        "function": "threshold_unwelded_steel",
+        "arguments": [
+          -0.5
+        ]
+      },
+      "expected": {
+        "value": 170.0
+      },
+      "how_obtained": "R < 0 selects the constant 170 N/mm^(3/2) branch."
+    },
+    {
+      "name": "threshold_R_zero",
+      "inputs": {
+        "function": "threshold_unwelded_steel",
+        "arguments": [
+          0.0
+        ]
+      },
+      "expected": {
+        "value": 170.0
+      },
+      "how_obtained": "170-214*0 = 170."
+    },
+    {
+      "name": "threshold_R_quarter",
+      "inputs": {
+        "function": "threshold_unwelded_steel",
+        "arguments": [
+          0.25
+        ]
+      },
+      "expected": {
+        "value": 116.5
+      },
+      "how_obtained": "170-214*0.25 = 116.5."
+    },
+    {
+      "name": "threshold_R_half",
+      "inputs": {
+        "function": "threshold_unwelded_steel",
+        "arguments": [
+          0.5
+        ]
+      },
+      "expected": {
+        "value": 63.0
+      },
+      "how_obtained": "R >= 0.5 selects 63; the left-hand limit also equals 170-107 = 63."
+    },
+    {
+      "name": "threshold_R_high",
+      "inputs": {
+        "function": "threshold_unwelded_steel",
+        "arguments": [
+          0.8
+        ]
+      },
+      "expected": {
+        "value": 63.0
+      },
+      "how_obtained": "R >= 0.5 selects 63."
+    },
+    {
+      "name": "through_crack_m3",
+      "inputs": {
+        "function": "cycles_through_crack",
+        "arguments": [
+          0.002,
+          0.01,
+          100000000.0,
+          1.64754666094773e-29,
+          3.0
+        ]
+      },
+      "expected": {
+        "value": 269469.62546429
+      },
+      "how_obtained": "to_si(5.21e-13,3) = 5.21e-13*10^-16.5 = 1.64754666094773e-29. Integrating da/[A*dsigma^3*(pi*a)^(3/2)] gives 2*(a_i^-1/2-a_f^-1/2)/(A*dsigma^3*pi^(3/2)). Equivalently in mm: 2*(1/sqrt(2)-1/sqrt(10))/(5.21e-7*pi^(3/2)) = 0.781758030339419/(2.90109888634932e-6)."
+    },
+    {
+      "name": "through_crack_m2",
+      "inputs": {
+        "function": "cycles_through_crack",
+        "arguments": [
+          0.002,
+          0.01,
+          100000000.0,
+          1e-22,
+          2.0
+        ]
+      },
+      "expected": {
+        "value": 512299.998726776
+      },
+      "how_obtained": "to_si(1e-10,2) = 1e-22. N = ln(a_f/a_i)/(A*dsigma^2*pi) = 10^6*ln(5)/pi."
+    },
+    {
+      "name": "through_crack_m4",
+      "inputs": {
+        "function": "cycles_through_crack",
+        "arguments": [
+          0.002,
+          0.01,
+          100000000.0,
+          1e-36,
+          4.0
+        ]
+      },
+      "expected": {
+        "value": 405284.734569351
+      },
+      "how_obtained": "to_si(1e-15,4) = 1e-36. N = (1/a_i-1/a_f)/(A*dsigma^4*pi^2) = (500-100)/(10^-4*pi^2) = 4e6/pi^2."
+    },
+    {
+      "name": "rate_air_high_mean_dk100",
+      "inputs": {
+        "function": "rate_mm_per_cycle",
+        "arguments": [
+          100.0,
+          [
+            [
+              4.8e-18,
+              5.1
+            ],
+            [
+              5.86e-13,
+              2.88
+            ]
+          ],
+          63.0
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -7.11875876262441
+      },
+      "how_obtained": "100 exceeds the threshold but lies below the intersection. Stage A is smaller: log10(rate) = log10(4.8e-18)+5.1*2."
+    },
+    {
+      "name": "rate_air_high_mean_dk200",
+      "inputs": {
+        "function": "rate_mm_per_cycle",
+        "arguments": [
+          200.0,
+          [
+            [
+              4.8e-18,
+              5.1
+            ],
+            [
+              5.86e-13,
+              2.88
+            ]
+          ],
+          63.0
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -5.60513599646964
+      },
+      "how_obtained": "Stage B is smaller above the intersection: log10(rate) = log10(5.86e-13)+2.88*log10(200)."
+    },
+    {
+      "name": "rate_air_high_mean_dk500",
+      "inputs": {
+        "function": "rate_mm_per_cycle",
+        "arguments": [
+          500.0,
+          [
+            [
+              4.8e-18,
+              5.1
+            ],
+            [
+              5.86e-13,
+              2.88
+            ]
+          ],
+          63.0
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -4.45906877149417
+      },
+      "how_obtained": "Stage B is smaller: log10(rate) = log10(5.86e-13)+2.88*log10(500)."
+    },
+    {
+      "name": "rate_air_high_mean_dk1000",
+      "inputs": {
+        "function": "rate_mm_per_cycle",
+        "arguments": [
+          1000.0,
+          [
+            [
+              4.8e-18,
+              5.1
+            ],
+            [
+              5.86e-13,
+              2.88
+            ]
+          ],
+          63.0
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -3.59210238398191
+      },
+      "how_obtained": "Stage B is smaller: log10(rate) = log10(5.86e-13)+2.88*3."
+    },
+    {
+      "name": "rate_strictly_below_threshold",
+      "inputs": {
+        "function": "rate_mm_per_cycle",
+        "arguments": [
+          62.999,
+          [
+            [
+              4.8e-18,
+              5.1
+            ],
+            [
+              5.86e-13,
+              2.88
+            ]
+          ],
+          63.0
+        ]
+      },
+      "expected": {
+        "value": 0.0
+      },
+      "how_obtained": "62.999 < 63, so the threshold rule overrides both stages."
+    },
+    {
+      "name": "rate_exactly_at_threshold",
+      "inputs": {
+        "function": "rate_mm_per_cycle",
+        "arguments": [
+          63.0,
+          [
+            [
+              4.8e-18,
+              5.1
+            ],
+            [
+              5.86e-13,
+              2.88
+            ]
+          ],
+          63.0
+        ]
+      },
+      "expected": {
+        "transform": "log10",
+        "value": -8.14212196041115
+      },
+      "how_obtained": "The inequality is strict, so dk=dk0 uses the growth law. Stage A is smaller; log10(rate) = log10(4.8e-18)+5.1*log10(63)."
+    },
+    {
+      "name": "life_fixed_step_200000_missing_cycle_increment",
+      "inputs": {
+        "function": "life_fixed_step",
+        "arguments": [
+          0.002,
+          0.004,
+          0.025,
+          0.5,
+          100000000.0,
+          20000000.0,
+          [
+            [
+              5.86e-13,
+              2.88
+            ]
+          ],
+          63.0,
+          200000,
+          0.01
+        ]
+      },
+      "expected": {
+        "error_type": "ValueError",
+        "message": "life_fixed_step is underdetermined: supply a cycle increment or an explicit rule for selecting it"
+      },
+      "how_obtained": "No numerical lifetime is implied by the supplied data. Euler requires a_(j+1)=a_j+delta_N*v_a(a_j,c_j), c_(j+1)=c_j+delta_N*v_c(a_j,c_j), and cycles=j*delta_N. Neither delta_N nor a rule uniquely determining it is supplied. This exception is the reference module's explicit diagnostic, not a published fatigue result."
+    },
+    {
+      "name": "life_fixed_step_400000_missing_cycle_increment",
+      "inputs": {
+        "function": "life_fixed_step",
+        "arguments": [
+          0.002,
+          0.004,
+          0.025,
+          0.5,
+          100000000.0,
+          20000000.0,
+          [
+            [
+              5.86e-13,
+              2.88
+            ]
+          ],
+          63.0,
+          400000,
+          0.01
+        ]
+      },
+      "expected": {
+        "error_type": "ValueError",
+        "message": "life_fixed_step is underdetermined: supply a cycle increment or an explicit rule for selecting it"
+      },
+      "how_obtained": "Doubling an unspecified step count does not determine a cycle increment. Even requiring the first crossing at step n_steps generally imposes a_(n_steps-1)<a_target<=a_n_steps, not the unstated equality a_n_steps=a_target. The exception records the ambiguity rather than inventing a timestep or shooting procedure."
+    }
+  ],
+  "doubts": [
+    "life_fixed_step is not numerically well-defined. Equal steps in cycles require a cycle increment, total cycle interval, or an explicit selection rule. The number of steps and a first-crossing condition do not uniquely specify that increment. Setting delta_N=1 cycle, choosing depth steps, estimating a lifetime first, or shooting to a_n_steps=a_target would each add an assumption. Consequently the two requested lifetime tuples cannot be supplied faithfully; their cases are explicit ambiguity diagnostics.",
+    "The tabulated upper coefficients and the coefficients reconstructed from A_mean*10^(2*sd_log10) are not exactly equal. For example, air stage A at R>=0.5 reconstructs approximately 2.0952760e-17 rather than 2.10e-17. Rounded means, upper coefficients, and standard deviations can explain such differences. The catalogue therefore retains the supplied upper coefficients, while upper_from_mean tests use the supplied reconstruction equation.",
+    "The small-surface-flaw threshold cap cannot be represented by threshold_unwelded_steel(R), because that signature has neither flaw depth nor flaw type. Its cases test only the stated R-dependent threshold. Similarly life_fixed_step accepts a fixed dk0; the request does not specify automatically changing that threshold as a crosses 1 mm.",
+    "The Newman-Raju factor is aspect-ratio dependent and has a restricted applicability range. The module states and exposes the a/c<=1 branch relevant to the supplied initial flaw. An integrator also needs an explicit policy if evolving geometry leaves the supported branch, reaches a=B, or invalidates the finite-width correction.",
+    "Bending requires the Newman-Raju H factor; replacing the stress range by dsm+dsb while retaining only the membrane F factor would not implement the cited combined-loading expression.",
+    "The complete text and tables of King OTH 511 were not supplied here. The coefficient, threshold, and SD oracles are calculations from the supplied transcription, not a claim of page-by-page verification against that report. No additional discrepancy with King's original values is asserted without that verification.",
+    "Positive-coefficient lognormal data also leave the statistical meaning of 'mean A' potentially ambiguous: the arithmetic mean of A differs from 10 raised to the mean of log10(A). The module follows the explicitly supplied upper_from_mean equation without reinterpretation."
+  ]
+}

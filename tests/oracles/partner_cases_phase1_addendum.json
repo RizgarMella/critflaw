@@ -1,0 +1,825 @@
+[
+  {
+    "name": "residual_as_welded_application_yield",
+    "function": "residual_qm",
+    "inputs": {
+      "sy_app": 200,
+      "su_app": 400,
+      "sref": 150
+    },
+    "expected": {
+      "value": 200.0
+    },
+    "how_obtained": "Unrelaxed: 1*200 = 200."
+  },
+  {
+    "name": "residual_as_welded_room_yield",
+    "function": "residual_qm",
+    "inputs": {
+      "sy_app": 200,
+      "su_app": 400,
+      "sref": 150,
+      "sy_room": 250
+    },
+    "expected": {
+      "value": 250.0
+    },
+    "how_obtained": "Unrelaxed: 1*sy_room = 250."
+  },
+  {
+    "name": "residual_pwht_point_two",
+    "function": "residual_qm",
+    "inputs": {
+      "sy_app": 200,
+      "su_app": 400,
+      "sref": 150,
+      "fraction": 0.2
+    },
+    "expected": {
+      "value": 40.0
+    },
+    "how_obtained": "0.2*200 = 40."
+  },
+  {
+    "name": "residual_pwht_point_three",
+    "function": "residual_qm",
+    "inputs": {
+      "sy_app": 200,
+      "su_app": 400,
+      "sref": 150,
+      "fraction": 0.3
+    },
+    "expected": {
+      "value": 60.0
+    },
+    "how_obtained": "0.3*200 = 60."
+  },
+  {
+    "name": "residual_pwht_point_four_room",
+    "function": "residual_qm",
+    "inputs": {
+      "sy_app": 200,
+      "su_app": 400,
+      "sref": 150,
+      "fraction": 0.4,
+      "sy_room": 250
+    },
+    "expected": {
+      "value": 100.0
+    },
+    "how_obtained": "0.4*250 = 100."
+  },
+  {
+    "name": "relaxation_below_lower_clamp",
+    "function": "residual_qm",
+    "inputs": {
+      "sy_app": 200,
+      "su_app": 400,
+      "sref": 119.7,
+      "relaxation": true
+    },
+    "expected": {
+      "value": 200.0
+    },
+    "how_obtained": "sf=300; raw ratio=0.399, clamped to 0.4; min(200,(1.4-0.4)*200)=200."
+  },
+  {
+    "name": "relaxation_at_lower_clamp",
+    "function": "residual_qm",
+    "inputs": {
+      "sy_app": 200,
+      "su_app": 400,
+      "sref": 120,
+      "relaxation": true
+    },
+    "expected": {
+      "value": 200.0
+    },
+    "how_obtained": "sf=300; ratio=0.4; relaxed candidate=200."
+  },
+  {
+    "name": "relaxation_above_lower_clamp",
+    "function": "residual_qm",
+    "inputs": {
+      "sy_app": 200,
+      "su_app": 400,
+      "sref": 120.3,
+      "relaxation": true
+    },
+    "expected": {
+      "value": 199.8
+    },
+    "how_obtained": "sf=300; ratio=0.401; (1.4-0.401)*200=199.8."
+  },
+  {
+    "name": "relaxation_interior",
+    "function": "residual_qm",
+    "inputs": {
+      "sy_app": 200,
+      "su_app": 400,
+      "sref": 150,
+      "relaxation": true
+    },
+    "expected": {
+      "value": 180.0
+    },
+    "how_obtained": "sf=300; ratio=0.5; min(200,0.9*200)=180."
+  },
+  {
+    "name": "relaxation_below_upper_clamp",
+    "function": "residual_qm",
+    "inputs": {
+      "sy_app": 200,
+      "su_app": 400,
+      "sref": 299.7,
+      "relaxation": true
+    },
+    "expected": {
+      "value": 80.2
+    },
+    "how_obtained": "sf=300; ratio=0.999; (1.4-0.999)*200=80.2."
+  },
+  {
+    "name": "relaxation_at_upper_clamp",
+    "function": "residual_qm",
+    "inputs": {
+      "sy_app": 200,
+      "su_app": 400,
+      "sref": 300,
+      "relaxation": true
+    },
+    "expected": {
+      "value": 80.0
+    },
+    "how_obtained": "Ratio=1; (1.4-1)*200=80."
+  },
+  {
+    "name": "relaxation_above_upper_clamp",
+    "function": "residual_qm",
+    "inputs": {
+      "sy_app": 200,
+      "su_app": 400,
+      "sref": 300.3,
+      "relaxation": true
+    },
+    "expected": {
+      "value": 80.0
+    },
+    "how_obtained": "Raw ratio=1.001, clamped to 1; candidate=80."
+  },
+  {
+    "name": "relaxation_room_yield_caps_result",
+    "function": "residual_qm",
+    "inputs": {
+      "sy_app": 200,
+      "su_app": 400,
+      "sref": 150,
+      "relaxation": true,
+      "sy_room": 150
+    },
+    "expected": {
+      "value": 150.0
+    },
+    "how_obtained": "Application flow strength=300, candidate=180; unrelaxed room-yield term=150; minimum=150."
+  },
+  {
+    "name": "relaxation_room_yield_not_in_candidate",
+    "function": "residual_qm",
+    "inputs": {
+      "sy_app": 200,
+      "su_app": 400,
+      "sref": 150,
+      "relaxation": true,
+      "sy_room": 250
+    },
+    "expected": {
+      "value": 180.0
+    },
+    "how_obtained": "Room yield enters only unrelaxed term: min(250,(1.4-150/300)*200)=180."
+  },
+  {
+    "name": "relaxation_rejects_pwht",
+    "function": "residual_qm",
+    "inputs": {
+      "sy_app": 200,
+      "su_app": 400,
+      "sref": 150,
+      "fraction": 0.2,
+      "relaxation": true
+    },
+    "expected": {
+      "raises": "ValueError"
+    },
+    "how_obtained": "Explicit rule requires ValueError when relaxation is requested with fraction != 1."
+  },
+  {
+    "name": "kr_zero_secondary",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 10,
+      "ks": 0,
+      "lr": 0.8,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200
+    },
+    "expected": {
+      "value": 0.1
+    },
+    "how_obtained": "Decision row 3: 10/100=0.1."
+  },
+  {
+    "name": "kr_negative_secondary_clamped",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 10,
+      "ks": -20,
+      "lr": 0.8,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200,
+      "method": "V"
+    },
+    "expected": {
+      "value": 0.1
+    },
+    "how_obtained": "Set ks=0, then row 3 gives 10/100."
+  },
+  {
+    "name": "kr_both_negative_clamped",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": -10,
+      "ks": -20,
+      "lr": 0.8,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200
+    },
+    "expected": {
+      "value": 0.0
+    },
+    "how_obtained": "Both K values become zero; row 3 returns zero."
+  },
+  {
+    "name": "kr_no_primary_load_rho",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 0,
+      "ks": 1,
+      "lr": 0,
+      "kmat": 1,
+      "a": 0.05305164769729845,
+      "sy": 1
+    },
+    "expected": {
+      "value": 2.0
+    },
+    "how_obtained": "a is 1/(6*pi), rounded to binary64; plastic increment=1/(2*pi)=3a. Thus a_eff/a=4 and Kr=sqrt(4)*1/1=2."
+  },
+  {
+    "name": "kr_no_primary_load_V_beta_two",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 0,
+      "ks": 1,
+      "lr": 0,
+      "kmat": 1,
+      "a": 0.026525823848649224,
+      "sy": 1,
+      "method": "V",
+      "beta": 2
+    },
+    "expected": {
+      "value": 2.0
+    },
+    "how_obtained": "a=1/(12*pi), increment=1/(4*pi)=3a. Row 4 is independent of method; Kr=2."
+  },
+  {
+    "name": "kr_negative_primary_no_load_beta_half",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": -3,
+      "ks": 1,
+      "lr": 0,
+      "kmat": 1,
+      "a": 0.1061032953945969,
+      "sy": 1,
+      "beta": 0.5
+    },
+    "expected": {
+      "value": 2.0
+    },
+    "how_obtained": "kp clamps to zero. a=1/(3*pi), increment=1/pi=3a; Kr=2."
+  },
+  {
+    "name": "kr_no_primary_load_secondary_scaling",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 0,
+      "ks": 2,
+      "lr": 0,
+      "kmat": 2,
+      "a": 0.2122065907891938,
+      "sy": 1
+    },
+    "expected": {
+      "value": 2.0
+    },
+    "how_obtained": "a=2/(3*pi); increment=4/(2*pi)=3a. KJs=2*2=4; Kr=4/2=2."
+  },
+  {
+    "name": "kr_zero_primary_present_below_point_eight",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 0,
+      "ks": 10,
+      "lr": 0.799,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200
+    },
+    "expected": {
+      "value": 0.35
+    },
+    "how_obtained": "Unbounded chi gives rho1=0.25; lr<=0.8 gives rho=0.25; Kr=0.1+0.25."
+  },
+  {
+    "name": "kr_negative_primary_present_at_point_eight",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": -10,
+      "ks": 10,
+      "lr": 0.8,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200
+    },
+    "expected": {
+      "value": 0.35
+    },
+    "how_obtained": "kp clamps to zero; lr>0 selects row 5, not row 4. Kr=0.1+0.25."
+  },
+  {
+    "name": "kr_zero_primary_present_above_point_eight",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 0,
+      "ks": 10,
+      "lr": 0.801,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200
+    },
+    "expected": {
+      "value": 0.349
+    },
+    "how_obtained": "rho=4*0.25*(1.05-0.801)=0.249; Kr=0.349."
+  },
+  {
+    "name": "kr_zero_primary_present_below_one_point_zero_five",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 0,
+      "ks": 10,
+      "lr": 1.049,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200
+    },
+    "expected": {
+      "value": 0.101
+    },
+    "how_obtained": "rho=4*0.25*0.001=0.001; Kr=0.101."
+  },
+  {
+    "name": "kr_zero_primary_present_at_one_point_zero_five",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 0,
+      "ks": 10,
+      "lr": 1.05,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200
+    },
+    "expected": {
+      "value": 0.1
+    },
+    "how_obtained": "lr>=1.05 sets rho=0; Kr=10/100."
+  },
+  {
+    "name": "kr_zero_primary_present_above_one_point_zero_five",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 0,
+      "ks": 10,
+      "lr": 1.051,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200
+    },
+    "expected": {
+      "value": 0.1
+    },
+    "how_obtained": "lr>=1.05 sets rho=0."
+  },
+  {
+    "name": "kr_zero_primary_V_low_load",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 0,
+      "ks": 10,
+      "lr": 0.1,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200,
+      "method": "V"
+    },
+    "expected": {
+      "value": 0.29
+    },
+    "how_obtained": "Row 5: V=3.1-0.2=2.9; Kr=2.9*10/100."
+  },
+  {
+    "name": "kr_zero_primary_V_below_transition",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 0,
+      "ks": 10,
+      "lr": 1.049,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200,
+      "method": "V"
+    },
+    "expected": {
+      "value": 0.1002
+    },
+    "how_obtained": "V=3.1-2.098=1.002; Kr=0.1002."
+  },
+  {
+    "name": "kr_zero_primary_V_at_transition",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 0,
+      "ks": 10,
+      "lr": 1.05,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200,
+      "method": "V"
+    },
+    "expected": {
+      "value": 0.1
+    },
+    "how_obtained": "lr>=1.05 gives V=1."
+  },
+  {
+    "name": "kr_zero_primary_V_above_transition",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 0,
+      "ks": 10,
+      "lr": 1.051,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200,
+      "method": "V"
+    },
+    "expected": {
+      "value": 0.1
+    },
+    "how_obtained": "lr>=1.05 gives V=1."
+  },
+  {
+    "name": "kr_finite_chi_rho_below_point_eight",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 7.99,
+      "ks": 10,
+      "lr": 0.799,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200
+    },
+    "expected": {
+      "value": 0.27293
+    },
+    "how_obtained": "chi=1; rho1=0.1-0.007+0.00003=0.09303. Kr=0.1799+0.09303."
+  },
+  {
+    "name": "kr_finite_chi_rho_at_point_eight",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 8,
+      "ks": 10,
+      "lr": 0.8,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200
+    },
+    "expected": {
+      "value": 0.27303
+    },
+    "how_obtained": "chi=1; rho=0.09303; Kr=0.18+0.09303."
+  },
+  {
+    "name": "kr_finite_chi_rho_above_point_eight",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 8.01,
+      "ks": 10,
+      "lr": 0.801,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200
+    },
+    "expected": {
+      "value": 0.27275788
+    },
+    "how_obtained": "chi=1; rho=4*0.09303*0.249=0.09265788; Kr=0.1801+rho."
+  },
+  {
+    "name": "kr_finite_chi_rho_below_upper_transition",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 10.49,
+      "ks": 10,
+      "lr": 1.049,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200
+    },
+    "expected": {
+      "value": 0.20527212
+    },
+    "how_obtained": "chi=1; rho=4*0.09303*0.001=0.00037212; Kr=0.2049+rho."
+  },
+  {
+    "name": "kr_finite_chi_rho_at_upper_transition",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 10.5,
+      "ks": 10,
+      "lr": 1.05,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200
+    },
+    "expected": {
+      "value": 0.205
+    },
+    "how_obtained": "rho=0; Kr=(10.5+10)/100."
+  },
+  {
+    "name": "kr_finite_chi_rho_above_upper_transition",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 10.51,
+      "ks": 10,
+      "lr": 1.051,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200
+    },
+    "expected": {
+      "value": 0.2051
+    },
+    "how_obtained": "rho=0; Kr=(10.51+10)/100."
+  },
+  {
+    "name": "kr_chi_immediately_below_five_point_two",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 10,
+      "ks": 51.99999999999999,
+      "lr": 1,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200
+    },
+    "expected": {
+      "value": 0.66985798830585
+    },
+    "how_obtained": "chi is immediately below 5.2. Using exp(0.714*ln(5.2)) approximately 3.2450873192924, the polynomial's left limit is 0.32450873192924-0.18928+0.1140612096=0.24928994152924. At lr=1, rho=0.2*rho1; Kr approximately 0.62+0.04985798830585. The input's distance from 5.2 changes only final rounding digits."
+  },
+  {
+    "name": "kr_chi_at_five_point_two",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 10,
+      "ks": 52,
+      "lr": 1,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200
+    },
+    "expected": {
+      "value": 0.67
+    },
+    "how_obtained": "chi=5.2 selects rho1=0.25. rho=4*0.25*0.05=0.05; Kr=0.62+0.05."
+  },
+  {
+    "name": "kr_chi_immediately_above_five_point_two",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 10,
+      "ks": 52.00000000000001,
+      "lr": 1,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200
+    },
+    "expected": {
+      "value": 0.67
+    },
+    "how_obtained": "chi>5.2 selects rho1=0.25; Kr=0.67 to the reported precision."
+  },
+  {
+    "name": "kr_positive_primary_zero_lr_rho",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 10,
+      "ks": 10,
+      "lr": 0,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200
+    },
+    "expected": {
+      "value": 0.2
+    },
+    "how_obtained": "kp is nonzero, so row 4 does not apply. chi=0, rho1=0; Kr=20/100."
+  },
+  {
+    "name": "kr_positive_primary_zero_lr_V",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 10,
+      "ks": 10,
+      "lr": 0,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200,
+      "method": "V"
+    },
+    "expected": {
+      "value": 0.2
+    },
+    "how_obtained": "chi=0; V=min(1,3.1)=1; Kr=20/100."
+  },
+  {
+    "name": "kr_finite_chi_V_below_point_eight",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 7.99,
+      "ks": 10,
+      "lr": 0.799,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200,
+      "method": "V"
+    },
+    "expected": {
+      "value": 0.201076
+    },
+    "how_obtained": "chi=1; first V candidate=1.21176, cap=1.502; Kr=(7.99+12.1176)/100."
+  },
+  {
+    "name": "kr_finite_chi_V_at_point_eight",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 8,
+      "ks": 10,
+      "lr": 0.8,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200,
+      "method": "V"
+    },
+    "expected": {
+      "value": 0.2012
+    },
+    "how_obtained": "chi=1; V=min(1.212,1.5)=1.212; Kr=(8+12.12)/100."
+  },
+  {
+    "name": "kr_finite_chi_V_above_point_eight",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 8.01,
+      "ks": 10,
+      "lr": 0.801,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200,
+      "method": "V"
+    },
+    "expected": {
+      "value": 0.201324
+    },
+    "how_obtained": "chi=1; V=min(1.21224,1.498)=1.21224; Kr=(8.01+12.1224)/100."
+  },
+  {
+    "name": "kr_V_below_minimum_branch_crossover",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 9,
+      "ks": 10,
+      "lr": 0.9,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200,
+      "method": "V"
+    },
+    "expected": {
+      "value": 0.2136
+    },
+    "how_obtained": "chi=1; V=min(1.236,1.3)=1.236. The crossover is lr=13/14. Kr=(9+12.36)/100."
+  },
+  {
+    "name": "kr_V_at_minimum_branch_crossover",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 9.285714285714286,
+      "ks": 10,
+      "lr": 0.9285714285714286,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200,
+      "method": "V"
+    },
+    "expected": {
+      "value": 0.21714285714285714
+    },
+    "how_obtained": "chi=1, lr=13/14. Both V candidates equal 87/70; kp=65/7. Kr=(65/7+87/7)/100=38/175."
+  },
+  {
+    "name": "kr_V_above_minimum_branch_crossover",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 9.5,
+      "ks": 10,
+      "lr": 0.95,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200,
+      "method": "V"
+    },
+    "expected": {
+      "value": 0.215
+    },
+    "how_obtained": "chi=1; V=min(1.248,1.2)=1.2; Kr=(9.5+12)/100."
+  },
+  {
+    "name": "kr_finite_chi_V_below_upper_transition",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 10.49,
+      "ks": 10,
+      "lr": 1.049,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200,
+      "method": "V"
+    },
+    "expected": {
+      "value": 0.2051
+    },
+    "how_obtained": "chi=1; V=min(1.27176,1.002)=1.002; Kr=(10.49+10.02)/100."
+  },
+  {
+    "name": "kr_finite_chi_V_at_upper_transition",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 10.5,
+      "ks": 10,
+      "lr": 1.05,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200,
+      "method": "V"
+    },
+    "expected": {
+      "value": 0.205
+    },
+    "how_obtained": "lr>=1.05 gives V=1; Kr=20.5/100."
+  },
+  {
+    "name": "kr_finite_chi_V_above_upper_transition",
+    "function": "kr_rule",
+    "inputs": {
+      "kp": 10.51,
+      "ks": 10,
+      "lr": 1.051,
+      "kmat": 100,
+      "a": 1,
+      "sy": 200,
+      "method": "V"
+    },
+    "expected": {
+      "value": 0.2051
+    },
+    "how_obtained": "lr>=1.05 gives V=1; Kr=20.51/100."
+  }
+]

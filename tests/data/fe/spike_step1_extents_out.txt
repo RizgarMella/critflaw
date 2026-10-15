@@ -1,0 +1,460 @@
+    *******************************************************************
+    **                                                               **
+    **                                                               **
+    **   W       W    AAAAA    RRRRRR    PPPPPP       33333  DDDD    **
+    **   W       W   A     A   R     R   P     P     3     3 D   D   **
+    **   W       W   A     A   R     R   P     P           3 D    D  **
+    **   W       W   A     A   R     R   P     P           3 D    D  **
+    **   W   W   W   AAAAAAA   RRRRRR    PPPPPP  ----  3333  D    D  **
+    **   W   W   W   A     A   R RR      P                 3 D    D  **
+    **   W   W   W   A     A   R   RR    P           3     3 D   D   **
+    **    WWW WWW    A     A   R     RR  P            33333  DDDD    **
+    **                                                               **
+    **     Linux (Intel Fortran)          -rel-    Release:  18.5.0  **
+    **     Code Build Number: 5120                                   **
+    **     Built on: Oct 04 2026 17:01:09                            **
+    **     University of Illinois @ U-C.    Civil & Env Engineering  **
+    **     Today: Wed Oct  7 21:42:03 2026                           **
+    **                                                               **
+    **     NOTICE:  Use of Program Implies Agreement with Terms &    **
+    **              Conditions Set Forth in File 'license_agreement' **
+    **              Enter the Command 'license' to Display Text      **
+    **                                                               **
+    *******************************************************************
+        structure plate
+        number of nodes 34852 elements 7344
+        material steel
+         properties deformation e 30000.0 nu 0.3 yld_pt 60.0 n_power 10.0
+        elements
+           all type q3disop linear material steel,
+              order 2x2x2 nodpts short
+       *input from 'coords.inp'
+  
+ >>>>> input file is: coords.inp
+       *echo off
+
+ >>>>> reached end of file.
+       *input from 'incid.inp'
+  
+ >>>>> input file is: incid.inp
+       *echo off
+  
+
+...... Minimum and maximum coordinate values ......
+          X min:  -0.800000D+01  X max:   0.800000D+01
+          Y min:  -0.150000D+01  Y max:   0.000000D+00
+          Z min:  -0.100000D+02  Z max:   0.552336D-14
+  
+
+ >>>>> reached end of file.
+  
+ >>>>> input file is: constraints.inp
+
+>> Maximum element-to-node connectivity:  12 @ node:     164
+
+
+
+ >>>>> reached end of file.
+       *input from 'unit_load.inp'
+  
+ >>>>> input file is: unit_load.inp
+       *echo off
+
+ >>>>> reached end of file.
+        blocking automatic
+        loading tension
+>> Check element blocking ...
+     ... Elements have scalar blocking
+
+         nonlinear
+          step 1 unit_remote 2.0
+        nonlinear analysis parameters
+         solution technique sparse iterative
+         time step 10000000000.0
+         maximum iterations 10
+         minimum iterations 2
+         extrapolate on
+         nonconvergent solutions stop
+         convergence test norm res tol 0.02
+         trace solution on
+         adaptive solution on
+         line search on
+         divergence check on
+         batch messages off
+        compute displacements for loading tension step 1
+
+       >> computing structural diagonal mass (@ t=0)
+          >>> total model mass (computed):   0.000000E+00
+          >>> total model volume:            0.237644E+03
+
+       >> starting global newton solution for step:             1
+       >> no extrapolating displacements to start step:         1
+       >> delta forces for loads/displ/temps/creep. step:       1
+       >> computing tangent stiffness step, iteration:          1  1
+       >> running sparse solver step, iteration:                1  1
+          >> solver wall time statistics (secs):
+               number of MKL threads used               4
+               MKL version, build:      2025.3 20251007
+               Pardiso starting work         @       0.45
+               finished dof setup            @       0.45
+               non-zero term counts finished @       0.47
+               number of equations                 103300
+               non-zero terms in profile          8037591
+               building sparse ptrs, indexes @       0.47
+               k_ptrs, k_indexes done        @       0.64
+               sparse [k] assembly done      @       0.78
+               load vector assembly done     @       0.78
+               Pardiso solver initializing   @       0.78
+               reorder-symbolic factor. done @       2.46
+               terms in factored matrix (M):        86.62
+               factorization op count (GFlop):     111.49
+               reordering memory (GB):               0.29
+                 min diagonal term:  0.241D+03
+                 max diagonal term:  0.279D+06
+               using conjugate gradient-krylov method
+               with direct solver when needed and as the
+               pre-conditioner: -- requires in-memory operation --
+               conjugate gradient-Krylov iters          2
+               Krylov iterations done        @       4.14
+       >> updating strains/stress/forces step, iteration:       1  1
+       >> line search completed. step length:  1.000 *          1  1
+
+    newton convergence tests step:       1 iteration:   1 @ wall time:      4.3
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:  -0.125995E-12 @ (node,dir):    2881 X
+    test 2: norm of residual load vector:          0.16552E-11
+            norm of total load vector:             0.57500E+01
+            ratio*100:         0.00000   (passed)
+
+       >> computing tangent stiffness step, iteration:          1  2
+       >> running sparse solver step, iteration:                1  2
+            min, max diagonal terms:  0.241D+03 0.279D+06
+       >> conjugate gradient-Krylov iterations:               2
+       >> updating strains/stress/forces step, iteration:       1  2
+       >> line search completed. step length:  1.000 *          1  2
+
+    newton convergence tests step:       1 iteration:   2 @ wall time:      5.0
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.169285E-13 @ (node,dir):   17028 X
+    test 2: norm of residual load vector:          0.34762E-12
+            norm of total load vector:             0.57500E+01
+            ratio*100:         0.00000   (passed)
+
+
+ >> solution for step:       1 converged:  2 iters.   model time:  0.141007E+10
+ >> total applied load pattern factors through step:       1
+      > unit_rem       2.0000      constraints    1.0000    
+  
+       domain J1
+         normal plane nx 0.000000 ny 0.000000 nz 1.000000
+         tangent vector tx 0.000000 ty -1.000000 tz 0.000000
+         symmetric
+         front nodes 145 10288 248 q3disop verify
+         q-values automatic rings 1-8
+         function type a
+         print domain extents
+         compute domain integral
+
+
+                         domain-integral post-processing
+                         -------------------------------
+
+ structure: plate   
+ loading: tension      step:     1        model analysis time:   0.141007E+10
+ domain id: J1                            current elapsed wall time:      5.0
+ box tolerance ratio:  0.3000E-03
+ box tolerance:        0.4912E-05
+
+ coincident nodes on crack front:
+
+   listed node           /--- coincident nodes ---/
+
+       145        34453   34454   34455   34456   34457   34458   34459
+                  34460   34461   34462   34463   34464   34465   34466
+                  34467   34468
+     10288        34469   34470   34471   34472   34473   34474   34475
+                  34476
+       248        34477   34478   34479   34480   34481   34482   34483
+                  34484   34485   34486   34487   34488   34489   34490
+                  34491   34492
+
+ area under q along front:        0.163741E-01
+ length of crack front segment:   0.327483E-01
+ Young's modulus at crack front node       145 :  0.300000E+05
+ Poisson's ratio at crack front node       145 :  0.300000E+00
+
+ Physical Extents of Domains in Global Coordinates
+    Domain        X-min          Y-min         Z-min          X-max          Y-max          Z-max
+       1        1.48701       -0.03347       -0.01222        1.51178        0.00000        0.00000
+       2        1.47509       -0.03422       -0.02441        1.52356        0.00000        0.00000
+       3        1.46317       -0.03496       -0.03658        1.53534        0.00000        0.00000
+       4        1.45125       -0.03571       -0.04872        1.54712        0.00000        0.00000
+       5        1.43934       -0.03645       -0.06083        1.55890        0.00000        0.00000
+       6        1.42742       -0.03720       -0.07292        1.57069        0.00000        0.00000
+       7        1.41550       -0.03794       -0.08497        1.58247        0.00000        0.00000
+       8        1.40358       -0.03869       -0.09700        1.59425        0.00000        0.00000
+
+
+                                              J-integral components
+                                           ===========================
+ domain        dm1          dm2          dm3          dm4          dm5          dm6          dm7          dm8       total J   killed ele
+     1     0.9335E-06   0.3796E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.2889E-03   (  0)
+     2     0.7162E-06   0.4214E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3011E-03   (  0)
+     3     0.6500E-06   0.4281E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3011E-03   (  0)
+     4     0.6103E-06   0.4321E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3012E-03   (  0)
+     5     0.5812E-06   0.4350E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3012E-03   (  0)
+     6     0.5591E-06   0.4373E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3012E-03   (  0)
+     7     0.5417E-06   0.4390E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3012E-03   (  0)
+     8     0.5284E-06   0.4404E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3012E-03   (  0)
+
+    average:  0.2996E-03   minimum:  0.2889E-03   maximum: 0.3012E-03     (J1)
+  0.2996E-03   0.2889E-03   0.3012E-03
+
+ * dm1: stress work density term
+ * dm2: traction-displacement derivative term
+ * dm3: kinetic energy term
+ * dm4: acceleration & velocity gradient term
+ * dm5: crack face loading term
+ * dm6: thermal loading term (zero for an fgm)
+ * dm7: stress times displacement gradient term (zero if not an fgm)
+ * dm8: derivative of stress work density (zero if not an fgm)
+ * ( ): number of killed elements skipped
+
+ * note: J-values doubled for symmetry *
+
+ * note: automatic domain builder cannot detect
+         domains that reach a boundary
+
+
+>>> Completed domain integral calculations
+
+       domain J3
+         normal plane nx 0.000000 ny 0.000000 nz 1.000000
+         symmetric
+         front nodes 145 10288 248 10255 247 q3disop verify
+         q-values automatic rings 1-8
+         function type b
+         print domain extents
+         compute domain integral
+
+
+                         domain-integral post-processing
+                         -------------------------------
+
+ structure: plate   
+ loading: tension      step:     1        model analysis time:   0.141007E+10
+ domain id: J3                            current elapsed wall time:      5.0
+ box tolerance ratio:  0.3000E-03
+ box tolerance:        0.4912E-05
+
+ coincident nodes on crack front:
+
+   listed node           /--- coincident nodes ---/
+
+       145        34453   34454   34455   34456   34457   34458   34459
+                  34460   34461   34462   34463   34464   34465   34466
+                  34467   34468
+     10288        34469   34470   34471   34472   34473   34474   34475
+                  34476
+       248        34477   34478   34479   34480   34481   34482   34483
+                  34484   34485   34486   34487   34488   34489   34490
+                  34491   34492
+     10255        34493   34494   34495   34496   34497   34498   34499
+                  34500
+       247        34501   34502   34503   34504   34505   34506   34507
+                  34508   34509   34510   34511   34512   34513   34514
+                  34515   34516
+
+ area under q along front:        0.327132E-01
+ length of crack front segment:   0.654265E-01
+ Young's modulus at crack front node       248 :  0.300000E+05
+ Poisson's ratio at crack front node       248 :  0.300000E+00
+
+ Physical Extents of Domains in Global Coordinates
+    Domain        X-min          Y-min         Z-min          X-max          Y-max          Z-max
+       1        1.48388       -0.06675       -0.01222        1.51178        0.00000        0.00000
+       2        1.47204       -0.06826       -0.02441        1.52356        0.00000        0.00000
+       3        1.46020       -0.06977       -0.03658        1.53534        0.00000        0.00000
+       4        1.44835       -0.07128       -0.04872        1.54712        0.00000        0.00000
+       5        1.43651       -0.07280       -0.06083        1.55890        0.00000        0.00000
+       6        1.42467       -0.07431       -0.07292        1.57069        0.00000        0.00000
+       7        1.41282       -0.07582       -0.08497        1.58247        0.00000        0.00000
+       8        1.40098       -0.07733       -0.09701        1.59425        0.00000        0.00000
+
+
+                                              J-integral components
+                                           ===========================
+ domain        dm1          dm2          dm3          dm4          dm5          dm6          dm7          dm8       total J   killed ele
+     1     0.1994E-05   0.7782E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.2989E-03   (  0)
+     2     0.1641E-05   0.8530E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3109E-03   (  0)
+     3     0.1559E-05   0.8617E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3111E-03   (  0)
+     4     0.1492E-05   0.8686E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3111E-03   (  0)
+     5     0.1425E-05   0.8752E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3111E-03   (  0)
+     6     0.1364E-05   0.8814E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3111E-03   (  0)
+     7     0.1306E-05   0.8872E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3111E-03   (  0)
+     8     0.1252E-05   0.8926E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3111E-03   (  0)
+
+    average:  0.3096E-03   minimum:  0.2989E-03   maximum: 0.3111E-03     (J3)
+  0.3096E-03   0.2989E-03   0.3111E-03
+
+ * dm1: stress work density term
+ * dm2: traction-displacement derivative term
+ * dm3: kinetic energy term
+ * dm4: acceleration & velocity gradient term
+ * dm5: crack face loading term
+ * dm6: thermal loading term (zero for an fgm)
+ * dm7: stress times displacement gradient term (zero if not an fgm)
+ * dm8: derivative of stress work density (zero if not an fgm)
+ * ( ): number of killed elements skipped
+
+ * note: J-values doubled for symmetry *
+
+ * note: automatic domain builder cannot detect
+         domains that reach a boundary
+
+
+>>> Completed domain integral calculations
+
+       domain J5
+         normal plane nx 0.000000 ny 0.000000 nz 1.000000
+         symmetric
+         front nodes 248 10255 247 10205 146 q3disop verify
+         q-values automatic rings 1-8
+         function type b
+         print domain extents
+         compute domain integral
+
+
+                         domain-integral post-processing
+                         -------------------------------
+
+ structure: plate   
+ loading: tension      step:     1        model analysis time:   0.141007E+10
+ domain id: J5                            current elapsed wall time:      5.0
+ box tolerance ratio:  0.3000E-03
+ box tolerance:        0.4902E-05
+
+ coincident nodes on crack front:
+
+   listed node           /--- coincident nodes ---/
+
+       248        34477   34478   34479   34480   34481   34482   34483
+                  34484   34485   34486   34487   34488   34489   34490
+                  34491   34492
+     10255        34493   34494   34495   34496   34497   34498   34499
+                  34500
+       247        34501   34502   34503   34504   34505   34506   34507
+                  34508   34509   34510   34511   34512   34513   34514
+                  34515   34516
+     10205        34517   34518   34519   34520   34521   34522   34523
+                  34524
+       146        34525   34526   34527   34528   34529   34530   34531
+                  34532   34533   34534   34535   34536   34537   34538
+                  34539   34540
+
+ area under q along front:        0.327132E-01
+ length of crack front segment:   0.654265E-01
+ Young's modulus at crack front node       247 :  0.300000E+05
+ Poisson's ratio at crack front node       247 :  0.300000E+00
+
+ Physical Extents of Domains in Global Coordinates
+    Domain        X-min          Y-min         Z-min          X-max          Y-max          Z-max
+       1        1.47884       -0.09984       -0.01222        1.51042       -0.03194        0.00000
+       2        1.46728       -0.10214       -0.02442        1.52191       -0.03115        0.00000
+       3        1.45573       -0.10444       -0.03658        1.53341       -0.03036        0.00000
+       4        1.44417       -0.10674       -0.04872        1.54490       -0.02958        0.00000
+       5        1.43262       -0.10904       -0.06083        1.55639       -0.02879        0.00000
+       6        1.42107       -0.11134       -0.07292        1.56788       -0.02800        0.00000
+       7        1.40951       -0.11363       -0.08498        1.57938       -0.02722        0.00000
+       8        1.39796       -0.11593       -0.09701        1.59087       -0.02643        0.00000
+
+
+                                              J-integral components
+                                           ===========================
+ domain        dm1          dm2          dm3          dm4          dm5          dm6          dm7          dm8       total J   killed ele
+     1     0.1943E-05   0.7644E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.2931E-03   (  0)
+     2     0.1587E-05   0.8386E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3049E-03   (  0)
+     3     0.1533E-05   0.8444E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3050E-03   (  0)
+     4     0.1513E-05   0.8465E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3050E-03   (  0)
+     5     0.1491E-05   0.8487E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3050E-03   (  0)
+     6     0.1467E-05   0.8512E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3050E-03   (  0)
+     7     0.1439E-05   0.8539E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3050E-03   (  0)
+     8     0.1411E-05   0.8567E-05   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3050E-03   (  0)
+
+    average:  0.3035E-03   minimum:  0.2931E-03   maximum: 0.3050E-03     (J5)
+  0.3035E-03   0.2931E-03   0.3050E-03
+
+ * dm1: stress work density term
+ * dm2: traction-displacement derivative term
+ * dm3: kinetic energy term
+ * dm4: acceleration & velocity gradient term
+ * dm5: crack face loading term
+ * dm6: thermal loading term (zero for an fgm)
+ * dm7: stress times displacement gradient term (zero if not an fgm)
+ * dm8: derivative of stress work density (zero if not an fgm)
+ * ( ): number of killed elements skipped
+
+ * note: J-values doubled for symmetry *
+
+ * note: automatic domain builder cannot detect
+         domains that reach a boundary
+
+
+>>> Completed domain integral calculations
+
+        stop
+
+
+
+
+ >>>>>  solution timings   <<<<<
+
+
+  calculations for tangent stiffness:            
+
+   wall time (secs):     0.2756  5.4 (%) no. calls:        2
+
+
+  calculations for tangent mass:                 
+
+   wall time (secs):     0.0063  0.1 (%) no. calls:        1
+
+
+  calculations for sig-eps & internal force:     
+
+   wall time (secs):     0.1229  2.4 (%) no. calls:        3
+
+
+  calculations for domain integrals:             
+
+   wall time (secs):     0.0550  1.1 (%) no. calls:        3
+
+
+  calculations for assembly of struct. K:        
+
+   wall time (secs):     0.4628  9.1 (%) no. calls:        2
+
+
+  calculations for set-up equations:             
+
+   wall time (secs):     0.0181  0.4 (%) no. calls:        1
+
+
+  calculations for sparse indexes set-up:        
+
+   wall time (secs):     0.1732  3.4 (%) no. calls:        1
+
+
+  calculations for reordering, symbolic factor:  
+
+   wall time (secs):     1.6815 33.2 (%) no. calls:        1
+
+
+  calculations for sparse fill, factorization:   
+
+   wall time (secs):     1.7634 34.9 (%) no. calls:        2
+ 
+ 
+>> total job wall time (secs):         5.07

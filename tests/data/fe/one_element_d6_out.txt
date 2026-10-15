@@ -1,0 +1,1909 @@
+    *******************************************************************
+    **                                                               **
+    **                                                               **
+    **   W       W    AAAAA    RRRRRR    PPPPPP       33333  DDDD    **
+    **   W       W   A     A   R     R   P     P     3     3 D   D   **
+    **   W       W   A     A   R     R   P     P           3 D    D  **
+    **   W       W   A     A   R     R   P     P           3 D    D  **
+    **   W   W   W   AAAAAAA   RRRRRR    PPPPPP  ----  3333  D    D  **
+    **   W   W   W   A     A   R RR      P                 3 D    D  **
+    **   W   W   W   A     A   R   RR    P           3     3 D   D   **
+    **    WWW WWW    A     A   R     RR  P            33333  DDDD    **
+    **                                                               **
+    **     Linux (Intel Fortran)          -rel-    Release:  18.5.0  **
+    **     Code Build Number: 5120                                   **
+    **     Built on: Oct 04 2026 17:01:09                            **
+    **     University of Illinois @ U-C.    Civil & Env Engineering  **
+    **     Today: Wed Oct  7 21:09:21 2026                           **
+    **                                                               **
+    **     NOTICE:  Use of Program Implies Agreement with Terms &    **
+    **              Conditions Set Forth in File 'license_agreement' **
+    **              Enter the Command 'license' to Display Text      **
+    **                                                               **
+    *******************************************************************
+        structure one_element
+        number of nodes 20 elements 1
+        material mat
+         properties deformation e 207000.0 nu 0.3 yld_pt 355.0 n_power 10.0
+        elements
+           all type q3disop linear material mat,
+              order 2x2x2 gausspts short
+       *input from 'coords.inp'
+  
+ >>>>> input file is: coords.inp
+       *echo off
+
+ >>>>> reached end of file.
+  
+ >>>>> input file is: incid.inp
+  
+
+...... Minimum and maximum coordinate values ......
+          X min:   0.000000D+00  X max:   0.100000D+01
+          Y min:   0.000000D+00  Y max:   0.100000D+01
+          Z min:   0.000000D+00  Z max:   0.100000D+01
+  
+
+ >>>>> reached end of file.
+  
+ >>>>> input file is: constraints.inp
+
+>> Maximum element-to-node connectivity:   1 @ node:       1
+
+
+
+ >>>>> reached end of file.
+  
+ >>>>> input file is: unit_tension.inp
+
+ >>>>> reached end of file.
+>> Check element blocking ...
+     ... Elements have vectorized blocking. No elements
+         in a block share a common node
+
+
+       >> computing structural diagonal mass (@ t=0)
+          >>> total model mass (computed):   0.000000E+00
+          >>> total model volume:            0.100000E+01
+
+       >> starting global newton solution for step:             1
+       >> no extrapolating displacements to start step:         1
+       >> delta forces for loads/displ/temps/creep. step:       1
+       >> computing tangent stiffness step, iteration:          1  1
+       >> running sparse solver step, iteration:                1  1
+          >> solver wall time statistics (secs):
+               number of MKL threads used               1
+               MKL version, build:      2025.3 20251007
+               Pardiso starting work         @       0.06
+               finished dof setup            @       0.06
+               non-zero term counts finished @       0.07
+               number of equations                     36
+               non-zero terms in profile              666
+               building sparse ptrs, indexes @       0.07
+               k_ptrs, k_indexes done        @       0.07
+               sparse [k] assembly done      @       0.07
+               load vector assembly done     @       0.07
+               Pardiso solver initializing   @       0.07
+               reorder-symbolic factor. done @       0.07
+               terms in factored matrix (M):         0.00
+               factorization op count (GFlop):       0.00
+               reordering memory (GB):               0.00
+                 min diagonal term:  0.730D+05
+                 max diagonal term:  0.189D+06
+               numeric factor/solve done     @       0.07
+       >> updating strains/stress/forces step, iteration:       1  1
+       >> line search completed. step length:  1.000 *          1  1
+
+    newton convergence tests step:       1 iteration:   1 @ wall time:      0.1
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:  -0.235299E-13 @ (node,dir):      20 Z
+    test 2: norm of residual load vector:          0.65254E-13
+            norm of total load vector:             0.17250E+03
+            ratio*100:         0.00000   (passed)
+
+       >> computing tangent stiffness step, iteration:          1  2
+       >> running sparse solver step, iteration:                1  2
+            min, max diagonal terms:  0.730D+05 0.189D+06
+       >> updating strains/stress/forces step, iteration:       1  2
+       >> line search completed. step length:  1.000 *          1  2
+
+    newton convergence tests step:       1 iteration:   2 @ wall time:      0.1
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.284511E-13 @ (node,dir):      16 Y
+    test 2: norm of residual load vector:          0.67570E-13
+            norm of total load vector:             0.17250E+03
+            ratio*100:         0.00000   (passed)
+
+
+ >> solution for step:       1 converged:  2 iters.   model time:  0.141007E+10
+ >> total applied load pattern factors through step:       1
+      > unit_ten       177.50      constraints    1.0000    
+  
+
+
+
+        structure one_elem                       page no.    1
+        step no.       1                        loading pull    
+
+        stresses                      
+
+
+
+      elem  g.p.         sigma_xx            sigma_yy            sigma_zz
+                         sigma_xy            sigma_yz            sigma_xz
+                         eng_dens             mises                 c1   
+                            c2                  c3   
+
+          1      1      177.500000            0.000000           -0.000000
+                          0.000000           -0.000000            0.000000
+                          0.076102          177.500000            0.000000
+                          0.000000            0.000000
+
+                 2      177.500000            0.000000           -0.000000
+                         -0.000000           -0.000000            0.000000
+                          0.076102          177.500000            0.000000
+                          0.000000            0.000000
+
+                 3      177.500000           -0.000000           -0.000000
+                          0.000000           -0.000000           -0.000000
+                          0.076102          177.500000            0.000000
+                          0.000000            0.000000
+
+                 4      177.500000            0.000000            0.000000
+                          0.000000           -0.000000           -0.000000
+                          0.076102          177.500000            0.000000
+                          0.000000            0.000000
+
+                 5      177.500000           -0.000000           -0.000000
+                          0.000000           -0.000000            0.000000
+                          0.076102          177.500000            0.000000
+                          0.000000            0.000000
+
+                 6      177.500000           -0.000000           -0.000000
+                         -0.000000            0.000000            0.000000
+                          0.076102          177.500000            0.000000
+                          0.000000            0.000000
+
+                 7      177.500000           -0.000000           -0.000000
+                         -0.000000            0.000000           -0.000000
+                          0.076102          177.500000            0.000000
+                          0.000000            0.000000
+
+                 8      177.500000            0.000000           -0.000000
+                          0.000000           -0.000000           -0.000000
+                          0.076102          177.500000            0.000000
+                          0.000000            0.000000
+
+
+
+
+        structure one_elem                       page no.    1
+        step no.       1                        loading pull    
+
+        strains                       
+
+
+
+      elem  g.p.           eps_xx              eps_yy              eps_zz
+                           gam_xy              gam_yz              gam_xz
+                          eff_eps
+
+          1      1        0.000857           -0.000257           -0.000257
+                          0.000000           -0.000000            0.000000
+                          0.000743
+
+                 2        0.000857           -0.000257           -0.000257
+                         -0.000000           -0.000000            0.000000
+                          0.000743
+
+                 3        0.000857           -0.000257           -0.000257
+                          0.000000           -0.000000           -0.000000
+                          0.000743
+
+                 4        0.000857           -0.000257           -0.000257
+                          0.000000           -0.000000           -0.000000
+                          0.000743
+
+                 5        0.000857           -0.000257           -0.000257
+                          0.000000           -0.000000            0.000000
+                          0.000743
+
+                 6        0.000857           -0.000257           -0.000257
+                         -0.000000            0.000000            0.000000
+                          0.000743
+
+                 7        0.000857           -0.000257           -0.000257
+                         -0.000000            0.000000           -0.000000
+                          0.000743
+
+                 8        0.000857           -0.000257           -0.000257
+                          0.000000           -0.000000           -0.000000
+                          0.000743
+
+
+
+
+        structure one_elem                                                   page no.    1
+        step no.       1                        loading pull    
+
+         nodal displacements       
+
+
+
+        node               u                   v                   w    
+            2         0.85749E-03         0.00000E+00         0.00000E+00
+            3         0.85749E-03        -0.25725E-03         0.00000E+00
+            6         0.85749E-03         0.00000E+00        -0.25725E-03
+
+       >> starting global newton solution for step:             2
+       >> extrapolating displacements to start step:            2 (*   0.800)
+       >> delta forces for loads/displ/temps/creep. step:       2
+       >> computing tangent stiffness step, iteration:          2  1
+       >> running sparse solver step, iteration:                2  1
+            min, max diagonal terms:  0.730D+05 0.189D+06
+       >> updating strains/stress/forces step, iteration:       2  1
+       >> line search completed. step length:  1.000 *          2  1
+
+    newton convergence tests step:       2 iteration:   1 @ wall time:      0.1
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.282125E-13 @ (node,dir):      13 X
+    test 2: norm of residual load vector:          0.57014E-13
+            norm of total load vector:             0.31050E+03
+            ratio*100:         0.00000   (passed)
+
+       >> computing tangent stiffness step, iteration:          2  2
+       >> running sparse solver step, iteration:                2  2
+            min, max diagonal terms:  0.730D+05 0.189D+06
+       >> updating strains/stress/forces step, iteration:       2  2
+       >> line search completed. step length:  1.000 *          2  2
+
+    newton convergence tests step:       2 iteration:   2 @ wall time:      0.1
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:  -0.448412E-13 @ (node,dir):      15 X
+    test 2: norm of residual load vector:          0.83743E-13
+            norm of total load vector:             0.31050E+03
+            ratio*100:         0.00000   (passed)
+
+
+ >> solution for step:       2 converged:  2 iters.   model time:  0.282013E+10
+ >> total applied load pattern factors through step:       2
+      > unit_ten       319.50      constraints    2.0000    
+  
+
+
+
+        structure one_elem                       page no.    1
+        step no.       2                        loading pull    
+
+        stresses                      
+
+
+
+      elem  g.p.         sigma_xx            sigma_yy            sigma_zz
+                         sigma_xy            sigma_yz            sigma_xz
+                         eng_dens             mises                 c1   
+                            c2                  c3   
+
+          1      1      319.500000            0.000000            0.000000
+                          0.000000           -0.000000            0.000000
+                          0.246571          319.500000            0.000000
+                          0.000000            0.000000
+
+                 2      319.500000            0.000000           -0.000000
+                         -0.000000           -0.000000            0.000000
+                          0.246571          319.500000            0.000000
+                          0.000000            0.000000
+
+                 3      319.500000            0.000000            0.000000
+                          0.000000           -0.000000           -0.000000
+                          0.246571          319.500000            0.000000
+                          0.000000            0.000000
+
+                 4      319.500000           -0.000000            0.000000
+                         -0.000000            0.000000           -0.000000
+                          0.246571          319.500000            0.000000
+                          0.000000            0.000000
+
+                 5      319.500000           -0.000000           -0.000000
+                          0.000000           -0.000000            0.000000
+                          0.246571          319.500000            0.000000
+                          0.000000            0.000000
+
+                 6      319.500000           -0.000000           -0.000000
+                         -0.000000            0.000000            0.000000
+                          0.246571          319.500000            0.000000
+                          0.000000            0.000000
+
+                 7      319.500000           -0.000000           -0.000000
+                          0.000000            0.000000           -0.000000
+                          0.246571          319.500000            0.000000
+                          0.000000            0.000000
+
+                 8      319.500000           -0.000000           -0.000000
+                         -0.000000            0.000000           -0.000000
+                          0.246571          319.500000            0.000000
+                          0.000000            0.000000
+
+
+
+
+        structure one_elem                       page no.    1
+        step no.       2                        loading pull    
+
+        strains                       
+
+
+
+      elem  g.p.           eps_xx              eps_yy              eps_zz
+                           gam_xy              gam_yz              gam_xz
+                          eff_eps
+
+          1      1        0.001543           -0.000463           -0.000463
+                          0.000000           -0.000000            0.000000
+                          0.001338
+
+                 2        0.001543           -0.000463           -0.000463
+                         -0.000000           -0.000000            0.000000
+                          0.001338
+
+                 3        0.001543           -0.000463           -0.000463
+                          0.000000           -0.000000           -0.000000
+                          0.001338
+
+                 4        0.001543           -0.000463           -0.000463
+                         -0.000000            0.000000           -0.000000
+                          0.001338
+
+                 5        0.001543           -0.000463           -0.000463
+                          0.000000           -0.000000            0.000000
+                          0.001338
+
+                 6        0.001543           -0.000463           -0.000463
+                         -0.000000            0.000000            0.000000
+                          0.001338
+
+                 7        0.001543           -0.000463           -0.000463
+                          0.000000            0.000000           -0.000000
+                          0.001338
+
+                 8        0.001543           -0.000463           -0.000463
+                         -0.000000            0.000000           -0.000000
+                          0.001338
+
+
+
+
+        structure one_elem                                                   page no.    1
+        step no.       2                        loading pull    
+
+         nodal displacements       
+
+
+
+        node               u                   v                   w    
+            2         0.15435E-02         0.00000E+00         0.00000E+00
+            3         0.15435E-02        -0.46304E-03         0.00000E+00
+            6         0.15435E-02         0.00000E+00        -0.46304E-03
+
+       >> starting global newton solution for step:             3
+       >> extrapolating displacements to start step:            3 (*   0.125)
+       >> delta forces for loads/displ/temps/creep. step:       3
+       >> computing tangent stiffness step, iteration:          3  1
+       >> running sparse solver step, iteration:                3  1
+            min, max diagonal terms:  0.730D+05 0.189D+06
+       >> updating strains/stress/forces step, iteration:       3  1
+       >> line search completed. step length:  0.343 *          3  1
+
+    newton convergence tests step:       3 iteration:   1 @ wall time:      0.1
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.911859E-06 @ (node,dir):       9 X
+    test 2: norm of residual load vector:          0.17758E-05
+            norm of total load vector:             0.32775E+03
+            ratio*100:         0.00000   (passed)
+
+       >> computing tangent stiffness step, iteration:          3  2
+       >> running sparse solver step, iteration:                3  2
+            min, max diagonal terms:  0.730D+05 0.189D+06
+       >> updating strains/stress/forces step, iteration:       3  2
+       >> line search completed. step length:  0.490 *          3  2
+
+    newton convergence tests step:       3 iteration:   2 @ wall time:      0.1
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.287829E-06 @ (node,dir):      14 X
+    test 2: norm of residual load vector:          0.82742E-06
+            norm of total load vector:             0.32775E+03
+            ratio*100:         0.00000   (passed)
+
+
+ >> solution for step:       3 converged:  2 iters.   model time:  0.423020E+10
+ >> total applied load pattern factors through step:       3
+      > unit_ten       337.25      constraints    3.0000    
+  
+
+
+
+        structure one_elem                       page no.    1
+        step no.       3                        loading pull    
+
+        stresses                      
+
+
+
+      elem  g.p.         sigma_xx            sigma_yy            sigma_zz
+                         sigma_xy            sigma_yz            sigma_xz
+                         eng_dens             mises                 c1   
+                            c2                  c3   
+
+          1      1      337.249998            0.000001            0.000001
+                          0.000000           -0.000000            0.000000
+                          0.274728          337.249998            0.000000
+                          0.000000            0.000000
+
+                 2      337.250000           -0.000000            0.000000
+                          0.000000            0.000000           -0.000000
+                          0.274728          337.250000            0.000000
+                          0.000000            0.000000
+
+                 3      337.250000            0.000000           -0.000000
+                         -0.000000            0.000000            0.000000
+                          0.274728          337.250000            0.000000
+                          0.000000            0.000000
+
+                 4      337.249998            0.000001            0.000001
+                         -0.000000            0.000000           -0.000000
+                          0.274728          337.249997            0.000000
+                          0.000000            0.000000
+
+                 5      337.250000            0.000000            0.000000
+                          0.000000           -0.000000            0.000000
+                          0.274728          337.250000            0.000000
+                          0.000000            0.000000
+
+                 6      337.249999            0.000000           -0.000000
+                          0.000000           -0.000000           -0.000000
+                          0.274728          337.249999            0.000000
+                          0.000000            0.000000
+
+                 7      337.249999           -0.000000            0.000000
+                         -0.000000           -0.000000            0.000000
+                          0.274728          337.249999            0.000000
+                          0.000000            0.000000
+
+                 8      337.249999            0.000001            0.000001
+                         -0.000000           -0.000000           -0.000000
+                          0.274728          337.249998            0.000000
+                          0.000000            0.000000
+
+
+
+
+        structure one_elem                       page no.    1
+        step no.       3                        loading pull    
+
+        strains                       
+
+
+
+      elem  g.p.           eps_xx              eps_yy              eps_zz
+                           gam_xy              gam_yz              gam_xz
+                          eff_eps
+
+          1      1        0.001629           -0.000489           -0.000489
+                          0.000000           -0.000000            0.000000
+                          0.001412
+
+                 2        0.001629           -0.000489           -0.000489
+                          0.000000            0.000000           -0.000000
+                          0.001412
+
+                 3        0.001629           -0.000489           -0.000489
+                         -0.000000            0.000000            0.000000
+                          0.001412
+
+                 4        0.001629           -0.000489           -0.000489
+                         -0.000000            0.000000           -0.000000
+                          0.001412
+
+                 5        0.001629           -0.000489           -0.000489
+                          0.000000           -0.000000            0.000000
+                          0.001412
+
+                 6        0.001629           -0.000489           -0.000489
+                          0.000000           -0.000000           -0.000000
+                          0.001412
+
+                 7        0.001629           -0.000489           -0.000489
+                         -0.000000           -0.000000            0.000000
+                          0.001412
+
+                 8        0.001629           -0.000489           -0.000489
+                         -0.000000           -0.000000           -0.000000
+                          0.001412
+
+
+
+
+        structure one_elem                                                   page no.    1
+        step no.       3                        loading pull    
+
+         nodal displacements       
+
+
+
+        node               u                   v                   w    
+            2         0.16292E-02         0.00000E+00         0.00000E+00
+            3         0.16292E-02        -0.48877E-03         0.00000E+00
+            6         0.16292E-02         0.00000E+00        -0.48877E-03
+
+       >> starting global newton solution for step:             4
+       >> extrapolating displacements to start step:            4 (*   0.400)
+       >> delta forces for loads/displ/temps/creep. step:       4
+       >> computing tangent stiffness step, iteration:          4  1
+       >> running sparse solver step, iteration:                4  1
+            min, max diagonal terms:  0.683D+05 0.184D+06
+       >> updating strains/stress/forces step, iteration:       4  1
+       >> line search completed. step length:  1.000 *          4  1
+
+    newton convergence tests step:       4 iteration:   1 @ wall time:      0.1
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.562341E-02 @ (node,dir):      14 X
+    test 2: norm of residual load vector:          0.14198E-01
+            norm of total load vector:             0.33464E+03
+            ratio*100:         0.00424   (failed)
+
+       >> computing tangent stiffness step, iteration:          4  2
+       >> running sparse solver step, iteration:                4  2
+            min, max diagonal terms:  0.676D+05 0.184D+06
+       >> updating strains/stress/forces step, iteration:       4  2
+       >> line search completed. step length:  1.000 *          4  2
+
+    newton convergence tests step:       4 iteration:   2 @ wall time:      0.2
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.393229E-05 @ (node,dir):      14 X
+    test 2: norm of residual load vector:          0.99285E-05
+            norm of total load vector:             0.33465E+03
+            ratio*100:         0.00000   (failed)
+
+       >> computing tangent stiffness step, iteration:          4  3
+       >> running sparse solver step, iteration:                4  3
+            min, max diagonal terms:  0.676D+05 0.184D+06
+       >> updating strains/stress/forces step, iteration:       4  3
+       >> line search completed. step length:  1.000 *          4  3
+
+    newton convergence tests step:       4 iteration:   3 @ wall time:      0.2
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.211742E-11 @ (node,dir):      10 X
+    test 2: norm of residual load vector:          0.53395E-11
+            norm of total load vector:             0.33465E+03
+            ratio*100:         0.00000   (passed)
+
+
+ >> solution for step:       4 converged:  3 iters.   model time:  0.564026E+10
+ >> total applied load pattern factors through step:       4
+      > unit_ten       344.35      constraints    4.0000    
+  
+
+
+
+        structure one_elem                       page no.    1
+        step no.       4                        loading pull    
+
+        stresses                      
+
+
+
+      elem  g.p.         sigma_xx            sigma_yy            sigma_zz
+                         sigma_xy            sigma_yz            sigma_xz
+                         eng_dens             mises                 c1   
+                            c2                  c3   
+
+          1      1      344.350000            0.000000            0.000000
+                          0.000000           -0.000000            0.000000
+                          0.288373          344.350000            0.000006
+                          0.000000            0.000000
+
+                 2      344.350000            0.000000            0.000000
+                         -0.000000           -0.000000            0.000000
+                          0.288373          344.350000            0.000006
+                          0.000000            0.000000
+
+                 3      344.350000            0.000000            0.000000
+                          0.000000           -0.000000           -0.000000
+                          0.288373          344.350000            0.000006
+                          0.000000            0.000000
+
+                 4      344.350000            0.000000            0.000000
+                         -0.000000           -0.000000           -0.000000
+                          0.288373          344.350000            0.000006
+                          0.000000            0.000000
+
+                 5      344.350000            0.000000            0.000000
+                          0.000000           -0.000000            0.000000
+                          0.288373          344.350000            0.000006
+                          0.000000            0.000000
+
+                 6      344.350000            0.000000            0.000000
+                         -0.000000            0.000000            0.000000
+                          0.288373          344.350000            0.000006
+                          0.000000            0.000000
+
+                 7      344.350000            0.000000            0.000000
+                         -0.000000            0.000000           -0.000000
+                          0.288373          344.350000            0.000006
+                          0.000000            0.000000
+
+                 8      344.350000            0.000000            0.000000
+                         -0.000000            0.000000           -0.000000
+                          0.288373          344.350000            0.000006
+                          0.000000            0.000000
+
+
+
+
+        structure one_elem                       page no.    1
+        step no.       4                        loading pull    
+
+        strains                       
+
+
+
+      elem  g.p.           eps_xx              eps_yy              eps_zz
+                           gam_xy              gam_yz              gam_xz
+                          eff_eps
+
+          1      1        0.001669           -0.000502           -0.000502
+                          0.000000           -0.000000            0.000000
+                          0.001447
+
+                 2        0.001669           -0.000502           -0.000502
+                         -0.000000           -0.000000            0.000000
+                          0.001447
+
+                 3        0.001669           -0.000502           -0.000502
+                          0.000000           -0.000000           -0.000000
+                          0.001447
+
+                 4        0.001669           -0.000502           -0.000502
+                         -0.000000           -0.000000           -0.000000
+                          0.001447
+
+                 5        0.001669           -0.000502           -0.000502
+                          0.000000           -0.000000            0.000000
+                          0.001447
+
+                 6        0.001669           -0.000502           -0.000502
+                         -0.000000            0.000000            0.000000
+                          0.001447
+
+                 7        0.001669           -0.000502           -0.000502
+                         -0.000000            0.000000           -0.000000
+                          0.001447
+
+                 8        0.001669           -0.000502           -0.000502
+                         -0.000000            0.000000           -0.000000
+                          0.001447
+
+
+
+
+        structure one_elem                                                   page no.    1
+        step no.       4                        loading pull    
+
+         nodal displacements       
+
+
+
+        node               u                   v                   w    
+            2         0.16692E-02         0.00000E+00         0.00000E+00
+            3         0.16692E-02        -0.50192E-03         0.00000E+00
+            6         0.16692E-02         0.00000E+00        -0.50192E-03
+
+       >> starting global newton solution for step:             5
+       >> extrapolating displacements to start step:            5 (*   1.000)
+       >> delta forces for loads/displ/temps/creep. step:       5
+       >> computing tangent stiffness step, iteration:          5  1
+       >> running sparse solver step, iteration:                5  1
+            min, max diagonal terms:  0.639D+05 0.180D+06
+       >> updating strains/stress/forces step, iteration:       5  1
+       >> line search completed. step length:  1.000 *          5  1
+
+    newton convergence tests step:       5 iteration:   1 @ wall time:      0.2
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.328221E-01 @ (node,dir):      10 X
+    test 2: norm of residual load vector:          0.82872E-01
+            norm of total load vector:             0.34150E+03
+            ratio*100:         0.02427   (failed)
+
+       >> computing tangent stiffness step, iteration:          5  2
+       >> running sparse solver step, iteration:                5  2
+            min, max diagonal terms:  0.625D+05 0.178D+06
+       >> updating strains/stress/forces step, iteration:       5  2
+       >> line search completed. step length:  1.000 *          5  2
+
+    newton convergence tests step:       5 iteration:   2 @ wall time:      0.2
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.221500E-03 @ (node,dir):      10 X
+    test 2: norm of residual load vector:          0.55926E-03
+            norm of total load vector:             0.34155E+03
+            ratio*100:         0.00016   (failed)
+
+       >> computing tangent stiffness step, iteration:          5  3
+       >> running sparse solver step, iteration:                5  3
+            min, max diagonal terms:  0.624D+05 0.178D+06
+       >> updating strains/stress/forces step, iteration:       5  3
+       >> line search completed. step length:  1.000 *          5  3
+
+    newton convergence tests step:       5 iteration:   3 @ wall time:      0.2
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.150787E-07 @ (node,dir):      18 X
+    test 2: norm of residual load vector:          0.38072E-07
+            norm of total load vector:             0.34155E+03
+            ratio*100:         0.00000   (passed)
+
+
+ >> solution for step:       5 converged:  3 iters.   model time:  0.705033E+10
+ >> total applied load pattern factors through step:       5
+      > unit_ten       351.45      constraints    5.0000    
+  
+
+
+
+        structure one_elem                       page no.    1
+        step no.       5                        loading pull    
+
+        stresses                      
+
+
+
+      elem  g.p.         sigma_xx            sigma_yy            sigma_zz
+                         sigma_xy            sigma_yz            sigma_xz
+                         eng_dens             mises                 c1   
+                            c2                  c3   
+
+          1      1      351.450000            0.000000            0.000000
+                          0.000000           -0.000000            0.000000
+                          0.308591          351.450000            0.000029
+                          0.000000            0.000000
+
+                 2      351.450000            0.000000            0.000000
+                         -0.000000           -0.000000            0.000000
+                          0.308591          351.450000            0.000029
+                          0.000000            0.000000
+
+                 3      351.450000            0.000000            0.000000
+                          0.000000           -0.000000           -0.000000
+                          0.308591          351.450000            0.000029
+                          0.000000            0.000000
+
+                 4      351.450000            0.000000            0.000000
+                         -0.000000           -0.000000           -0.000000
+                          0.308591          351.450000            0.000029
+                          0.000000            0.000000
+
+                 5      351.450000            0.000000            0.000000
+                          0.000000           -0.000000            0.000000
+                          0.308591          351.450000            0.000029
+                          0.000000            0.000000
+
+                 6      351.450000            0.000000            0.000000
+                         -0.000000            0.000000            0.000000
+                          0.308591          351.450000            0.000029
+                          0.000000            0.000000
+
+                 7      351.450000            0.000000            0.000000
+                         -0.000000            0.000000           -0.000000
+                          0.308591          351.450000            0.000029
+                          0.000000            0.000000
+
+                 8      351.450000            0.000000            0.000000
+                         -0.000000            0.000000           -0.000000
+                          0.308591          351.450000            0.000029
+                          0.000000            0.000000
+
+
+
+
+        structure one_elem                       page no.    1
+        step no.       5                        loading pull    
+
+        strains                       
+
+
+
+      elem  g.p.           eps_xx              eps_yy              eps_zz
+                           gam_xy              gam_yz              gam_xz
+                          eff_eps
+
+          1      1        0.001727           -0.000524           -0.000524
+                          0.000000           -0.000000            0.000000
+                          0.001501
+
+                 2        0.001727           -0.000524           -0.000524
+                         -0.000000           -0.000000            0.000000
+                          0.001501
+
+                 3        0.001727           -0.000524           -0.000524
+                          0.000000           -0.000000           -0.000000
+                          0.001501
+
+                 4        0.001727           -0.000524           -0.000524
+                         -0.000000           -0.000000           -0.000000
+                          0.001501
+
+                 5        0.001727           -0.000524           -0.000524
+                          0.000000           -0.000000            0.000000
+                          0.001501
+
+                 6        0.001727           -0.000524           -0.000524
+                         -0.000000            0.000000            0.000000
+                          0.001501
+
+                 7        0.001727           -0.000524           -0.000524
+                         -0.000000            0.000000           -0.000000
+                          0.001501
+
+                 8        0.001727           -0.000524           -0.000524
+                         -0.000000            0.000000           -0.000000
+                          0.001501
+
+
+
+
+        structure one_elem                                                   page no.    1
+        step no.       5                        loading pull    
+
+         nodal displacements       
+
+
+
+        node               u                   v                   w    
+            2         0.17273E-02         0.00000E+00         0.00000E+00
+            3         0.17273E-02        -0.52409E-03         0.00000E+00
+            6         0.17273E-02         0.00000E+00        -0.52409E-03
+
+       >> starting global newton solution for step:             6
+       >> extrapolating displacements to start step:            6 (*   0.500)
+       >> delta forces for loads/displ/temps/creep. step:       6
+       >> computing tangent stiffness step, iteration:          6  1
+       >> running sparse solver step, iteration:                6  1
+            min, max diagonal terms:  0.603D+05 0.176D+06
+       >> updating strains/stress/forces step, iteration:       6  1
+       >> line search completed. step length:  1.000 *          6  1
+
+    newton convergence tests step:       6 iteration:   1 @ wall time:      0.2
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.191563E-01 @ (node,dir):      14 X
+    test 2: norm of residual load vector:          0.48367E-01
+            norm of total load vector:             0.34497E+03
+            ratio*100:         0.01402   (failed)
+
+       >> computing tangent stiffness step, iteration:          6  2
+       >> running sparse solver step, iteration:                6  2
+            min, max diagonal terms:  0.593D+05 0.175D+06
+       >> updating strains/stress/forces step, iteration:       6  2
+       >> line search completed. step length:  1.000 *          6  2
+
+    newton convergence tests step:       6 iteration:   2 @ wall time:      0.2
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.145304E-03 @ (node,dir):      10 X
+    test 2: norm of residual load vector:          0.36687E-03
+            norm of total load vector:             0.34500E+03
+            ratio*100:         0.00011   (failed)
+
+       >> computing tangent stiffness step, iteration:          6  3
+       >> running sparse solver step, iteration:                6  3
+            min, max diagonal terms:  0.592D+05 0.175D+06
+       >> updating strains/stress/forces step, iteration:       6  3
+       >> line search completed. step length:  1.000 *          6  3
+
+    newton convergence tests step:       6 iteration:   3 @ wall time:      0.2
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.863429E-08 @ (node,dir):      14 X
+    test 2: norm of residual load vector:          0.21800E-07
+            norm of total load vector:             0.34500E+03
+            ratio*100:         0.00000   (passed)
+
+
+ >> solution for step:       6 converged:  3 iters.   model time:  0.846039E+10
+ >> total applied load pattern factors through step:       6
+      > unit_ten       355.00      constraints    6.0000    
+  
+
+
+
+        structure one_elem                       page no.    1
+        step no.       6                        loading pull    
+
+        stresses                      
+
+
+
+      elem  g.p.         sigma_xx            sigma_yy            sigma_zz
+                         sigma_xy            sigma_yz            sigma_xz
+                         eng_dens             mises                 c1   
+                            c2                  c3   
+
+          1      1      355.000000            0.000000            0.000000
+                          0.000000            0.000000            0.000000
+                          0.324435          355.000000            0.000057
+                          0.000000            0.000000
+
+                 2      355.000000            0.000000            0.000000
+                         -0.000000            0.000000            0.000000
+                          0.324435          355.000000            0.000057
+                          0.000000            0.000000
+
+                 3      355.000000            0.000000            0.000000
+                          0.000000            0.000000           -0.000000
+                          0.324435          355.000000            0.000057
+                          0.000000            0.000000
+
+                 4      355.000000            0.000000            0.000000
+                         -0.000000            0.000000           -0.000000
+                          0.324435          355.000000            0.000057
+                          0.000000            0.000000
+
+                 5      355.000000            0.000000            0.000000
+                          0.000000           -0.000000            0.000000
+                          0.324435          355.000000            0.000057
+                          0.000000            0.000000
+
+                 6      355.000000            0.000000            0.000000
+                         -0.000000            0.000000            0.000000
+                          0.324435          355.000000            0.000057
+                          0.000000            0.000000
+
+                 7      355.000000            0.000000            0.000000
+                         -0.000000            0.000000           -0.000000
+                          0.324435          355.000000            0.000057
+                          0.000000            0.000000
+
+                 8      355.000000            0.000000            0.000000
+                         -0.000000            0.000000           -0.000000
+                          0.324435          355.000000            0.000057
+                          0.000000            0.000000
+
+
+
+
+        structure one_elem                       page no.    1
+        step no.       6                        loading pull    
+
+        strains                       
+
+
+
+      elem  g.p.           eps_xx              eps_yy              eps_zz
+                           gam_xy              gam_yz              gam_xz
+                          eff_eps
+
+          1      1        0.001772           -0.000543           -0.000543
+                          0.000000            0.000000            0.000000
+                          0.001543
+
+                 2        0.001772           -0.000543           -0.000543
+                         -0.000000            0.000000            0.000000
+                          0.001543
+
+                 3        0.001772           -0.000543           -0.000543
+                          0.000000            0.000000           -0.000000
+                          0.001543
+
+                 4        0.001772           -0.000543           -0.000543
+                         -0.000000            0.000000           -0.000000
+                          0.001543
+
+                 5        0.001772           -0.000543           -0.000543
+                          0.000000           -0.000000            0.000000
+                          0.001543
+
+                 6        0.001772           -0.000543           -0.000543
+                         -0.000000            0.000000            0.000000
+                          0.001543
+
+                 7        0.001772           -0.000543           -0.000543
+                         -0.000000            0.000000           -0.000000
+                          0.001543
+
+                 8        0.001772           -0.000543           -0.000543
+                         -0.000000            0.000000           -0.000000
+                          0.001543
+
+
+
+
+        structure one_elem                                                   page no.    1
+        step no.       6                        loading pull    
+
+         nodal displacements       
+
+
+
+        node               u                   v                   w    
+            2         0.17722E-02         0.00000E+00         0.00000E+00
+            3         0.17722E-02        -0.54308E-03         0.00000E+00
+            6         0.17722E-02         0.00000E+00        -0.54308E-03
+
+       >> starting global newton solution for step:             7
+       >> extrapolating displacements to start step:            7 (*   1.000)
+       >> delta forces for loads/displ/temps/creep. step:       7
+       >> computing tangent stiffness step, iteration:          7  1
+       >> running sparse solver step, iteration:                7  1
+            min, max diagonal terms:  0.564D+05 0.171D+06
+       >> updating strains/stress/forces step, iteration:       7  1
+       >> line search completed. step length:  1.000 *          7  1
+
+    newton convergence tests step:       7 iteration:   1 @ wall time:      0.2
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.157862E+00 @ (node,dir):      14 X
+    test 2: norm of residual load vector:          0.39858E+00
+            norm of total load vector:             0.34822E+03
+            ratio*100:         0.11446   (failed)
+
+       >> computing tangent stiffness step, iteration:          7  2
+       >> running sparse solver step, iteration:                7  2
+            min, max diagonal terms:  0.546D+05 0.169D+06
+       >> updating strains/stress/forces step, iteration:       7  2
+       >> line search completed. step length:  1.000 *          7  2
+
+    newton convergence tests step:       7 iteration:   2 @ wall time:      0.2
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.140995E-02 @ (node,dir):      10 X
+    test 2: norm of residual load vector:          0.35600E-02
+            norm of total load vector:             0.34845E+03
+            ratio*100:         0.00102   (failed)
+
+       >> computing tangent stiffness step, iteration:          7  3
+       >> running sparse solver step, iteration:                7  3
+            min, max diagonal terms:  0.541D+05 0.167D+06
+       >> updating strains/stress/forces step, iteration:       7  3
+       >> line search completed. step length:  1.000 *          7  3
+
+    newton convergence tests step:       7 iteration:   3 @ wall time:      0.2
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.113655E-06 @ (node,dir):      18 X
+    test 2: norm of residual load vector:          0.28696E-06
+            norm of total load vector:             0.34845E+03
+            ratio*100:         0.00000   (passed)
+
+
+ >> solution for step:       7 converged:  3 iters.   model time:  0.987046E+10
+ >> total applied load pattern factors through step:       7
+      > unit_ten       358.55      constraints    7.0000    
+  
+
+
+
+        structure one_elem                       page no.    1
+        step no.       7                        loading pull    
+
+        stresses                      
+
+
+
+      elem  g.p.         sigma_xx            sigma_yy            sigma_zz
+                         sigma_xy            sigma_yz            sigma_xz
+                         eng_dens             mises                 c1   
+                            c2                  c3   
+
+          1      1      358.550000            0.000000            0.000000
+                          0.000000            0.000000            0.000000
+                          0.364029          358.549999            0.000162
+                          0.000000            0.000000
+
+                 2      358.550000            0.000000            0.000000
+                         -0.000000            0.000000            0.000000
+                          0.364029          358.549999            0.000162
+                          0.000000            0.000000
+
+                 3      358.550000            0.000000            0.000000
+                          0.000000            0.000000           -0.000000
+                          0.364029          358.549999            0.000162
+                          0.000000            0.000000
+
+                 4      358.550000            0.000000            0.000000
+                         -0.000000            0.000000           -0.000000
+                          0.364029          358.549999            0.000162
+                          0.000000            0.000000
+
+                 5      358.550000            0.000000            0.000000
+                          0.000000            0.000000            0.000000
+                          0.364029          358.549999            0.000162
+                          0.000000            0.000000
+
+                 6      358.550000            0.000000            0.000000
+                         -0.000000            0.000000            0.000000
+                          0.364029          358.549999            0.000162
+                          0.000000            0.000000
+
+                 7      358.550000            0.000000            0.000000
+                         -0.000000            0.000000           -0.000000
+                          0.364029          358.549999            0.000162
+                          0.000000            0.000000
+
+                 8      358.550000            0.000000            0.000000
+                         -0.000000            0.000000            0.000000
+                          0.364029          358.549999            0.000162
+                          0.000000            0.000000
+
+
+
+
+        structure one_elem                       page no.    1
+        step no.       7                        loading pull    
+
+        strains                       
+
+
+
+      elem  g.p.           eps_xx              eps_yy              eps_zz
+                           gam_xy              gam_yz              gam_xz
+                          eff_eps
+
+          1      1        0.001894           -0.000601           -0.000601
+                          0.000000            0.000000            0.000000
+                          0.001663
+
+                 2        0.001894           -0.000601           -0.000601
+                         -0.000000            0.000000            0.000000
+                          0.001663
+
+                 3        0.001894           -0.000601           -0.000601
+                          0.000000            0.000000           -0.000000
+                          0.001663
+
+                 4        0.001894           -0.000601           -0.000601
+                         -0.000000            0.000000           -0.000000
+                          0.001663
+
+                 5        0.001894           -0.000601           -0.000601
+                          0.000000            0.000000            0.000000
+                          0.001663
+
+                 6        0.001894           -0.000601           -0.000601
+                         -0.000000            0.000000            0.000000
+                          0.001663
+
+                 7        0.001894           -0.000601           -0.000601
+                         -0.000000            0.000000           -0.000000
+                          0.001663
+
+                 8        0.001894           -0.000601           -0.000601
+                         -0.000000            0.000000            0.000000
+                          0.001663
+
+
+
+
+        structure one_elem                                                   page no.    1
+        step no.       7                        loading pull    
+
+         nodal displacements       
+
+
+
+        node               u                   v                   w    
+            2         0.18944E-02         0.00000E+00         0.00000E+00
+            3         0.18944E-02        -0.60078E-03         0.00000E+00
+            6         0.18944E-02         0.00000E+00        -0.60078E-03
+
+       >> starting global newton solution for step:             8
+       >> extrapolating displacements to start step:            8 (*   1.000)
+       >> delta forces for loads/displ/temps/creep. step:       8
+       >> computing tangent stiffness step, iteration:          8  1
+       >> running sparse solver step, iteration:                8  1
+            min, max diagonal terms:  0.526D+05 0.163D+06
+       >> updating strains/stress/forces step, iteration:       8  1
+       >> line search completed. step length:  1.000 *          8  1
+
+    newton convergence tests step:       8 iteration:   1 @ wall time:      0.3
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.474505E-02 @ (node,dir):      14 X
+    test 2: norm of residual load vector:          0.11981E-01
+            norm of total load vector:             0.35189E+03
+            ratio*100:         0.00340   (failed)
+
+       >> computing tangent stiffness step, iteration:          8  2
+       >> running sparse solver step, iteration:                8  2
+            min, max diagonal terms:  0.517D+05 0.161D+06
+       >> updating strains/stress/forces step, iteration:       8  2
+       >> line search completed. step length:  1.000 *          8  2
+
+    newton convergence tests step:       8 iteration:   2 @ wall time:      0.3
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.127296E-05 @ (node,dir):      10 X
+    test 2: norm of residual load vector:          0.32141E-05
+            norm of total load vector:             0.35190E+03
+            ratio*100:         0.00000   (passed)
+
+
+ >> solution for step:       8 converged:  2 iters.   model time:  0.112805E+11
+ >> total applied load pattern factors through step:       8
+      > unit_ten       362.10      constraints    8.0000    
+  
+
+
+
+        structure one_elem                       page no.    1
+        step no.       8                        loading pull    
+
+        stresses                      
+
+
+
+      elem  g.p.         sigma_xx            sigma_yy            sigma_zz
+                         sigma_xy            sigma_yz            sigma_xz
+                         eng_dens             mises                 c1   
+                            c2                  c3   
+
+          1      1      362.099996            0.000002            0.000002
+                          0.000000            0.000000            0.000000
+                          0.434710          362.099994            0.000341
+                          0.000000            0.000000
+
+                 2      362.099996            0.000002            0.000002
+                         -0.000000            0.000000            0.000000
+                          0.434710          362.099994            0.000341
+                          0.000000            0.000000
+
+                 3      362.099996            0.000002            0.000002
+                          0.000000            0.000000           -0.000000
+                          0.434710          362.099994            0.000341
+                          0.000000            0.000000
+
+                 4      362.099996            0.000002            0.000002
+                         -0.000000            0.000000           -0.000000
+                          0.434710          362.099994            0.000341
+                          0.000000            0.000000
+
+                 5      362.099996            0.000002            0.000002
+                          0.000000            0.000000            0.000000
+                          0.434710          362.099994            0.000341
+                          0.000000            0.000000
+
+                 6      362.099996            0.000002            0.000002
+                         -0.000000            0.000000            0.000000
+                          0.434710          362.099994            0.000341
+                          0.000000            0.000000
+
+                 7      362.099996            0.000002            0.000002
+                         -0.000000            0.000000           -0.000000
+                          0.434710          362.099994            0.000341
+                          0.000000            0.000000
+
+                 8      362.099996            0.000002            0.000002
+                         -0.000000            0.000000           -0.000000
+                          0.434710          362.099994            0.000341
+                          0.000000            0.000000
+
+
+
+
+        structure one_elem                       page no.    1
+        step no.       8                        loading pull    
+
+        strains                       
+
+
+
+      elem  g.p.           eps_xx              eps_yy              eps_zz
+                           gam_xy              gam_yz              gam_xz
+                          eff_eps
+
+          1      1        0.002091           -0.000695           -0.000695
+                          0.000000            0.000000            0.000000
+                          0.001857
+
+                 2        0.002091           -0.000695           -0.000695
+                         -0.000000            0.000000            0.000000
+                          0.001857
+
+                 3        0.002091           -0.000695           -0.000695
+                          0.000000            0.000000           -0.000000
+                          0.001857
+
+                 4        0.002091           -0.000695           -0.000695
+                         -0.000000            0.000000           -0.000000
+                          0.001857
+
+                 5        0.002091           -0.000695           -0.000695
+                          0.000000            0.000000            0.000000
+                          0.001857
+
+                 6        0.002091           -0.000695           -0.000695
+                         -0.000000            0.000000            0.000000
+                          0.001857
+
+                 7        0.002091           -0.000695           -0.000695
+                         -0.000000            0.000000           -0.000000
+                          0.001857
+
+                 8        0.002091           -0.000695           -0.000695
+                         -0.000000            0.000000           -0.000000
+                          0.001857
+
+
+
+
+        structure one_elem                                                   page no.    1
+        step no.       8                        loading pull    
+
+         nodal displacements       
+
+
+
+        node               u                   v                   w    
+            2         0.20905E-02         0.00000E+00         0.00000E+00
+            3         0.20905E-02        -0.69542E-03         0.00000E+00
+            6         0.20905E-02         0.00000E+00        -0.69542E-03
+
+       >> starting global newton solution for step:             9
+       >> extrapolating displacements to start step:            9 (*   3.000)
+       >> delta forces for loads/displ/temps/creep. step:       9
+       >> computing tangent stiffness step, iteration:          9  1
+       >> running sparse solver step, iteration:                9  1
+            min, max diagonal terms:  0.467D+05 0.148D+06
+       >> updating strains/stress/forces step, iteration:       9  1
+       >> line search completed. step length:  1.000 *          9  1
+
+    newton convergence tests step:       9 iteration:   1 @ wall time:      0.3
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.653438E-02 @ (node,dir):      10 X
+    test 2: norm of residual load vector:          0.16499E-01
+            norm of total load vector:             0.36224E+03
+            ratio*100:         0.00455   (failed)
+
+       >> computing tangent stiffness step, iteration:          9  2
+       >> running sparse solver step, iteration:                9  2
+            min, max diagonal terms:  0.460D+05 0.146D+06
+       >> updating strains/stress/forces step, iteration:       9  2
+       >> line search completed. step length:  1.000 *          9  2
+
+    newton convergence tests step:       9 iteration:   2 @ wall time:      0.3
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.233874E-05 @ (node,dir):      18 X
+    test 2: norm of residual load vector:          0.59050E-05
+            norm of total load vector:             0.36225E+03
+            ratio*100:         0.00000   (failed)
+
+       >> computing tangent stiffness step, iteration:          9  3
+       >> running sparse solver step, iteration:                9  3
+            min, max diagonal terms:  0.460D+05 0.146D+06
+       >> updating strains/stress/forces step, iteration:       9  3
+       >> line search completed. step length:  1.000 *          9  3
+
+    newton convergence tests step:       9 iteration:   3 @ wall time:      0.3
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.298428E-12 @ (node,dir):      10 X
+    test 2: norm of residual load vector:          0.77358E-12
+            norm of total load vector:             0.36225E+03
+            ratio*100:         0.00000   (passed)
+
+
+ >> solution for step:       9 converged:  3 iters.   model time:  0.126906E+11
+ >> total applied load pattern factors through step:       9
+      > unit_ten       372.75      constraints    9.0000    
+  
+
+
+
+        structure one_elem                       page no.    1
+        step no.       9                        loading pull    
+
+        stresses                      
+
+
+
+      elem  g.p.         sigma_xx            sigma_yy            sigma_zz
+                         sigma_xy            sigma_yz            sigma_xz
+                         eng_dens             mises                 c1   
+                            c2                  c3   
+
+          1      1      372.750000            0.000000            0.000000
+                          0.000000           -0.000000            0.000000
+                          0.693161          372.750000            0.000993
+                          0.000000            0.000000
+
+                 2      372.750000            0.000000            0.000000
+                         -0.000000            0.000000            0.000000
+                          0.693161          372.750000            0.000993
+                          0.000000            0.000000
+
+                 3      372.750000            0.000000            0.000000
+                          0.000000            0.000000           -0.000000
+                          0.693161          372.750000            0.000993
+                          0.000000            0.000000
+
+                 4      372.750000            0.000000            0.000000
+                         -0.000000            0.000000           -0.000000
+                          0.693161          372.750000            0.000993
+                          0.000000            0.000000
+
+                 5      372.750000            0.000000            0.000000
+                          0.000000            0.000000            0.000000
+                          0.693161          372.750000            0.000993
+                          0.000000            0.000000
+
+                 6      372.750000            0.000000            0.000000
+                         -0.000000            0.000000            0.000000
+                          0.693161          372.750000            0.000993
+                          0.000000            0.000000
+
+                 7      372.750000            0.000000            0.000000
+                          0.000000            0.000000           -0.000000
+                          0.693161          372.750000            0.000993
+                          0.000000            0.000000
+
+                 8      372.750000            0.000000            0.000000
+                         -0.000000            0.000000           -0.000000
+                          0.693161          372.750000            0.000993
+                          0.000000            0.000000
+
+
+
+
+        structure one_elem                       page no.    1
+        step no.       9                        loading pull    
+
+        strains                       
+
+
+
+      elem  g.p.           eps_xx              eps_yy              eps_zz
+                           gam_xy              gam_yz              gam_xz
+                          eff_eps
+
+          1      1        0.002794           -0.001037           -0.001037
+                          0.000000           -0.000000            0.000000
+                          0.002553
+
+                 2        0.002794           -0.001037           -0.001037
+                         -0.000000            0.000000            0.000000
+                          0.002553
+
+                 3        0.002794           -0.001037           -0.001037
+                          0.000000            0.000000           -0.000000
+                          0.002553
+
+                 4        0.002794           -0.001037           -0.001037
+                         -0.000000            0.000000           -0.000000
+                          0.002553
+
+                 5        0.002794           -0.001037           -0.001037
+                          0.000000            0.000000            0.000000
+                          0.002553
+
+                 6        0.002794           -0.001037           -0.001037
+                         -0.000000            0.000000            0.000000
+                          0.002553
+
+                 7        0.002794           -0.001037           -0.001037
+                          0.000000            0.000000           -0.000000
+                          0.002553
+
+                 8        0.002794           -0.001037           -0.001037
+                         -0.000000            0.000000           -0.000000
+                          0.002553
+
+
+
+
+        structure one_elem                                                   page no.    1
+        step no.       9                        loading pull    
+
+         nodal displacements       
+
+
+
+        node               u                   v                   w    
+            2         0.27935E-02         0.00000E+00         0.00000E+00
+            3         0.27935E-02        -0.10366E-02         0.00000E+00
+            6         0.27935E-02         0.00000E+00        -0.10366E-02
+
+       >> starting global newton solution for step:            10
+       >> extrapolating displacements to start step:           10 (*   1.667)
+       >> delta forces for loads/displ/temps/creep. step:      10
+       >> computing tangent stiffness step, iteration:         10  1
+       >> running sparse solver step, iteration:               10  1
+            min, max diagonal terms:  0.410D+05 0.134D+06
+       >> updating strains/stress/forces step, iteration:      10  1
+       >> line search completed. step length:  1.000 *         10  1
+
+    newton convergence tests step:      10 iteration:   1 @ wall time:      0.3
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.489921E-01 @ (node,dir):      14 X
+    test 2: norm of residual load vector:          0.12370E+00
+            norm of total load vector:             0.37943E+03
+            ratio*100:         0.03260   (failed)
+
+       >> computing tangent stiffness step, iteration:         10  2
+       >> running sparse solver step, iteration:               10  2
+            min, max diagonal terms:  0.398D+05 0.131D+06
+       >> updating strains/stress/forces step, iteration:      10  2
+       >> line search completed. step length:  1.000 *         10  2
+
+    newton convergence tests step:      10 iteration:   2 @ wall time:      0.3
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.124800E-03 @ (node,dir):      10 X
+    test 2: norm of residual load vector:          0.31510E-03
+            norm of total load vector:             0.37950E+03
+            ratio*100:         0.00008   (failed)
+
+       >> computing tangent stiffness step, iteration:         10  3
+       >> running sparse solver step, iteration:               10  3
+            min, max diagonal terms:  0.397D+05 0.130D+06
+       >> updating strains/stress/forces step, iteration:      10  3
+       >> line search completed. step length:  1.000 *         10  3
+
+    newton convergence tests step:      10 iteration:   3 @ wall time:      0.3
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.812292E-09 @ (node,dir):      19 X
+    test 2: norm of residual load vector:          0.20508E-08
+            norm of total load vector:             0.37950E+03
+            ratio*100:         0.00000   (passed)
+
+
+ >> solution for step:      10 converged:  3 iters.   model time:  0.141007E+11
+ >> total applied load pattern factors through step:      10
+      > unit_ten       390.50      constraints    10.000    
+  
+
+
+
+        structure one_elem                       page no.    1
+        step no.      10                        loading pull    
+
+        stresses                      
+
+
+
+      elem  g.p.         sigma_xx            sigma_yy            sigma_zz
+                         sigma_xy            sigma_yz            sigma_xz
+                         eng_dens             mises                 c1   
+                            c2                  c3   
+
+          1      1      390.500000            0.000000            0.000000
+                          0.000000            0.000000            0.000000
+                          1.325653          390.500000            0.002562
+                          0.000000            0.000000
+
+                 2      390.500000            0.000000            0.000000
+                         -0.000000            0.000000            0.000000
+                          1.325653          390.500000            0.002562
+                          0.000000            0.000000
+
+                 3      390.500000            0.000000            0.000000
+                          0.000000            0.000000           -0.000000
+                          1.325653          390.500000            0.002562
+                          0.000000            0.000000
+
+                 4      390.500000            0.000000            0.000000
+                         -0.000000            0.000000           -0.000000
+                          1.325653          390.500000            0.002562
+                          0.000000            0.000000
+
+                 5      390.500000            0.000000            0.000000
+                          0.000000           -0.000000            0.000000
+                          1.325653          390.500000            0.002562
+                          0.000000            0.000000
+
+                 6      390.500000            0.000000            0.000000
+                         -0.000000            0.000000            0.000000
+                          1.325653          390.500000            0.002562
+                          0.000000            0.000000
+
+                 7      390.500000            0.000000            0.000000
+                         -0.000000            0.000000           -0.000000
+                          1.325653          390.500000            0.002562
+                          0.000000            0.000000
+
+                 8      390.500000            0.000000            0.000000
+                         -0.000000            0.000000            0.000000
+                          1.325653          390.500000            0.002562
+                          0.000000            0.000000
+
+
+
+
+        structure one_elem                       page no.    1
+        step no.      10                        loading pull    
+
+        strains                       
+
+
+
+      elem  g.p.           eps_xx              eps_yy              eps_zz
+                           gam_xy              gam_yz              gam_xz
+                          eff_eps
+
+          1      1        0.004448           -0.001847           -0.001847
+                          0.000000            0.000000            0.000000
+                          0.004197
+
+                 2        0.004448           -0.001847           -0.001847
+                         -0.000000            0.000000            0.000000
+                          0.004197
+
+                 3        0.004448           -0.001847           -0.001847
+                          0.000000            0.000000           -0.000000
+                          0.004197
+
+                 4        0.004448           -0.001847           -0.001847
+                         -0.000000            0.000000           -0.000000
+                          0.004197
+
+                 5        0.004448           -0.001847           -0.001847
+                          0.000000           -0.000000            0.000000
+                          0.004197
+
+                 6        0.004448           -0.001847           -0.001847
+                         -0.000000            0.000000            0.000000
+                          0.004197
+
+                 7        0.004448           -0.001847           -0.001847
+                         -0.000000            0.000000           -0.000000
+                          0.004197
+
+                 8        0.004448           -0.001847           -0.001847
+                         -0.000000            0.000000            0.000000
+                          0.004197
+
+
+
+
+        structure one_elem                                                   page no.    1
+        step no.      10                        loading pull    
+
+         nodal displacements       
+
+
+
+        node               u                   v                   w    
+            2         0.44482E-02         0.00000E+00         0.00000E+00
+            3         0.44482E-02        -0.18468E-02         0.00000E+00
+            6         0.44482E-02         0.00000E+00        -0.18468E-02
+
+       >> starting global newton solution for step:            11
+       >> extrapolating displacements to start step:           11 (*   2.000)
+       >> delta forces for loads/displ/temps/creep. step:      11
+       >> computing tangent stiffness step, iteration:         11  1
+       >> running sparse solver step, iteration:               11  1
+            min, max diagonal terms:  0.353D+05 0.119D+06
+       >> updating strains/stress/forces step, iteration:      11  1
+       >> line search completed. step length:  1.000 *         11  1
+
+    newton convergence tests step:      11 iteration:   1 @ wall time:      0.3
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.354025E+00 @ (node,dir):      18 X
+    test 2: norm of residual load vector:          0.89387E+00
+            norm of total load vector:             0.41348E+03
+            ratio*100:         0.21618   (failed)
+
+       >> computing tangent stiffness step, iteration:         11  2
+       >> running sparse solver step, iteration:               11  2
+            min, max diagonal terms:  0.338D+05 0.115D+06
+       >> updating strains/stress/forces step, iteration:      11  2
+       >> line search completed. step length:  1.000 *         11  2
+
+    newton convergence tests step:      11 iteration:   2 @ wall time:      0.3
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.585693E-02 @ (node,dir):      14 X
+    test 2: norm of residual load vector:          0.14788E-01
+            norm of total load vector:             0.41399E+03
+            ratio*100:         0.00357   (failed)
+
+       >> computing tangent stiffness step, iteration:         11  3
+       >> running sparse solver step, iteration:               11  3
+            min, max diagonal terms:  0.336D+05 0.115D+06
+       >> updating strains/stress/forces step, iteration:      11  3
+       >> line search completed. step length:  1.000 *         11  3
+
+    newton convergence tests step:      11 iteration:   3 @ wall time:      0.3
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.163526E-05 @ (node,dir):      19 X
+    test 2: norm of residual load vector:          0.41288E-05
+            norm of total load vector:             0.41400E+03
+            ratio*100:         0.00000   (passed)
+
+
+ >> solution for step:      11 converged:  3 iters.   model time:  0.155107E+11
+ >> total applied load pattern factors through step:      11
+      > unit_ten       426.00      constraints    11.000    
+  
+
+
+
+        structure one_elem                       page no.    1
+        step no.      11                        loading pull    
+
+        stresses                      
+
+
+
+      elem  g.p.         sigma_xx            sigma_yy            sigma_zz
+                         sigma_xy            sigma_yz            sigma_xz
+                         eng_dens             mises                 c1   
+                            c2                  c3   
+
+          1      1      425.999995            0.000002            0.000002
+                          0.000000           -0.000000            0.000000
+                          3.858864          425.999993            0.008561
+                          0.000000            0.000000
+
+                 2      425.999995            0.000002            0.000002
+                         -0.000000           -0.000000            0.000000
+                          3.858864          425.999993            0.008561
+                          0.000000            0.000000
+
+                 3      425.999995            0.000002            0.000002
+                          0.000000            0.000000           -0.000000
+                          3.858864          425.999993            0.008561
+                          0.000000            0.000000
+
+                 4      425.999995            0.000002            0.000002
+                         -0.000000            0.000000           -0.000000
+                          3.858864          425.999993            0.008561
+                          0.000000            0.000000
+
+                 5      425.999995            0.000002            0.000002
+                          0.000000            0.000000           -0.000000
+                          3.858864          425.999993            0.008561
+                          0.000000            0.000000
+
+                 6      425.999995            0.000002            0.000002
+                         -0.000000            0.000000            0.000000
+                          3.858864          425.999993            0.008561
+                          0.000000            0.000000
+
+                 7      425.999995            0.000002            0.000002
+                          0.000000            0.000000           -0.000000
+                          3.858864          425.999993            0.008561
+                          0.000000            0.000000
+
+                 8      425.999995            0.000002            0.000002
+                         -0.000000            0.000000            0.000000
+                          3.858864          425.999993            0.008561
+                          0.000000            0.000000
+
+
+
+
+        structure one_elem                       page no.    1
+        step no.      11                        loading pull    
+
+        strains                       
+
+
+
+      elem  g.p.           eps_xx              eps_yy              eps_zz
+                           gam_xy              gam_yz              gam_xz
+                          eff_eps
+
+          1      1        0.010619           -0.004898           -0.004898
+                          0.000000           -0.000000            0.000000
+                          0.010344
+
+                 2        0.010619           -0.004898           -0.004898
+                         -0.000000           -0.000000            0.000000
+                          0.010344
+
+                 3        0.010619           -0.004898           -0.004898
+                          0.000000            0.000000           -0.000000
+                          0.010344
+
+                 4        0.010619           -0.004898           -0.004898
+                         -0.000000            0.000000           -0.000000
+                          0.010344
+
+                 5        0.010619           -0.004898           -0.004898
+                          0.000000            0.000000           -0.000000
+                          0.010344
+
+                 6        0.010619           -0.004898           -0.004898
+                         -0.000000            0.000000            0.000000
+                          0.010344
+
+                 7        0.010619           -0.004898           -0.004898
+                          0.000000            0.000000           -0.000000
+                          0.010344
+
+                 8        0.010619           -0.004898           -0.004898
+                         -0.000000            0.000000            0.000000
+                          0.010344
+
+
+
+
+        structure one_elem                                                   page no.    1
+        step no.      11                        loading pull    
+
+         nodal displacements       
+
+
+
+        node               u                   v                   w    
+            2         0.10619E-01         0.00000E+00         0.00000E+00
+            3         0.10619E-01        -0.48977E-02         0.00000E+00
+            6         0.10619E-01         0.00000E+00        -0.48977E-02
+
+
+
+
+ >>>>>  solution timings   <<<<<
+
+
+  calculations for tangent stiffness:            
+
+   wall time (secs):     0.0051  1.4 (%) no. calls:       29
+
+
+  calculations for tangent mass:                 
+
+   wall time (secs):     0.0005  0.2 (%) no. calls:        1
+
+
+  calculations for sig-eps & internal force:     
+
+   wall time (secs):     0.0106  2.9 (%) no. calls:       45
+
+
+  calculations for output services:              
+
+   wall time (secs):     0.1783 49.3 (%) no. calls:       33
+
+
+  calculations for assembly of struct. K:        
+
+   wall time (secs):     0.0005  0.1 (%) no. calls:       29
+
+
+  calculations for set-up equations:             
+
+   wall time (secs):     0.0034  1.0 (%) no. calls:        1
+
+
+  calculations for sparse indexes set-up:        
+
+   wall time (secs):     0.0007  0.2 (%) no. calls:        1
+
+
+  calculations for reordering, symbolic factor:  
+
+   wall time (secs):     0.0024  0.7 (%) no. calls:        1
+
+
+  calculations for sparse fill/factor/solve      
+
+   wall time (secs):     0.0013  0.4 (%) no. calls:       29
+ 
+ 
+>> total job wall time (secs):         0.37

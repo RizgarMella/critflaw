@@ -1,0 +1,192 @@
+    *******************************************************************
+    **                                                               **
+    **                                                               **
+    **   W       W    AAAAA    RRRRRR    PPPPPP       33333  DDDD    **
+    **   W       W   A     A   R     R   P     P     3     3 D   D   **
+    **   W       W   A     A   R     R   P     P           3 D    D  **
+    **   W       W   A     A   R     R   P     P           3 D    D  **
+    **   W   W   W   AAAAAAA   RRRRRR    PPPPPP  ----  3333  D    D  **
+    **   W   W   W   A     A   R RR      P                 3 D    D  **
+    **   W   W   W   A     A   R   RR    P           3     3 D   D   **
+    **    WWW WWW    A     A   R     RR  P            33333  DDDD    **
+    **                                                               **
+    **     Linux (Intel Fortran)          -rel-    Release:  18.5.0  **
+    **     Code Build Number: 5120                                   **
+    **     Built on: Oct 04 2026 17:01:09                            **
+    **     University of Illinois @ U-C.    Civil & Env Engineering  **
+    **     Today: Wed Oct  7 21:14:04 2026                           **
+    **                                                               **
+    **     NOTICE:  Use of Program Implies Agreement with Terms &    **
+    **              Conditions Set Forth in File 'license_agreement' **
+    **              Enter the Command 'license' to Display Text      **
+    **                                                               **
+    *******************************************************************
+        structure one_element
+        number of nodes 20 elements 1
+        material mat
+         properties deformation e 207000.0 nu 0.3 yld_pt 355.0 n_power 10.0
+        elements
+           all type q3disop linear material mat,
+              order 2x2x2 gausspts short
+       *input from 'coords.inp'
+  
+ >>>>> input file is: coords.inp
+       *echo off
+
+ >>>>> reached end of file.
+  
+ >>>>> input file is: incid.inp
+  
+
+...... Minimum and maximum coordinate values ......
+          X min:   0.000000D+00  X max:   0.100000D+01
+          Y min:   0.000000D+00  Y max:   0.100000D+01
+          Z min:   0.000000D+00  Z max:   0.100000D+01
+  
+
+ >>>>> reached end of file.
+  
+ >>>>> input file is: constraints.inp
+
+>> Maximum element-to-node connectivity:   1 @ node:       1
+
+
+
+ >>>>> reached end of file.
+  
+ >>>>> input file is: unit_tension.inp
+
+ >>>>> reached end of file.
+>> Check element blocking ...
+     ... Elements have vectorized blocking. No elements
+         in a block share a common node
+
+
+       >> computing structural diagonal mass (@ t=0)
+          >>> total model mass (computed):   0.000000E+00
+          >>> total model volume:            0.100000E+01
+
+       >> starting global newton solution for step:             1
+       >> no extrapolating displacements to start step:         1
+       >> delta forces for loads/displ/temps/creep. step:       1
+       >> computing tangent stiffness step, iteration:          1  1
+       >> running sparse solver step, iteration:                1  1
+          >> solver wall time statistics (secs):
+               number of MKL threads used               1
+               MKL version, build:      2025.3 20251007
+               Pardiso starting work         @       0.19
+               finished dof setup            @       0.19
+               non-zero term counts finished @       0.19
+               number of equations                     36
+               non-zero terms in profile              666
+               building sparse ptrs, indexes @       0.19
+               k_ptrs, k_indexes done        @       0.19
+               sparse [k] assembly done      @       0.19
+               load vector assembly done     @       0.19
+               Pardiso solver initializing   @       0.19
+               reorder-symbolic factor. done @       0.22
+               terms in factored matrix (M):         0.00
+               factorization op count (GFlop):       0.00
+               reordering memory (GB):               0.00
+                 min diagonal term:  0.730D+05
+                 max diagonal term:  0.189D+06
+               numeric factor/solve done     @       0.23
+       >> updating strains/stress/forces step, iteration:       1  1
+
+    newton convergence tests step:       1 iteration:   1 @ wall time:      0.2
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:  -0.213163E-13 @ (node,dir):      19 X
+    test 2: norm of residual load vector:          0.43006E-13
+            norm of total load vector:             0.97183E+02
+            ratio*100:         0.00000   (passed)
+
+       >> computing tangent stiffness step, iteration:          1  2
+       >> running sparse solver step, iteration:                1  2
+            min, max diagonal terms:  0.730D+05 0.189D+06
+       >> updating strains/stress/forces step, iteration:       1  2
+
+    newton convergence tests step:       1 iteration:   2 @ wall time:      0.2
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:  -0.142109E-13 @ (node,dir):      14 X
+    test 2: norm of residual load vector:          0.27838E-13
+            norm of total load vector:             0.97183E+02
+            ratio*100:         0.00000   (passed)
+
+
+ >> solution for step:       1 converged:  2 iters.   model time:  0.141007E+10
+ >> total applied load pattern factors through step:       1
+      > unit_ten       100.00      constraints    1.0000    
+  
+
+       >> starting global newton solution for step:             2
+       >> no extrapolating displacements to start step:         2
+       >> delta forces for loads/displ/temps/creep. step:       2
+       >> computing tangent stiffness step, iteration:          2  1
+       >> running sparse solver step, iteration:                2  1
+            min, max diagonal terms:  0.730D+05 0.189D+06
+       >> updating strains/stress/forces step, iteration:       2  1
+
+    newton convergence tests step:       2 iteration:   1 @ wall time:      0.2
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:  -0.568434E-13 @ (node,dir):      19 X
+    test 2: norm of residual load vector:          0.95370E-13
+            norm of total load vector:             0.29155E+03
+            ratio*100:         0.00000   (passed)
+
+       >> computing tangent stiffness step, iteration:          2  2
+       >> running sparse solver step, iteration:                2  2
+            min, max diagonal terms:  0.730D+05 0.189D+06
+       >> updating strains/stress/forces step, iteration:       2  2
+
+    newton convergence tests step:       2 iteration:   2 @ wall time:      0.2
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.483616E-13 @ (node,dir):       9 X
+    test 2: norm of residual load vector:          0.85595E-13
+            norm of total load vector:             0.29155E+03
+            ratio*100:         0.00000   (passed)
+
+
+ >> solution for step:       2 converged:  2 iters.   model time:  0.282013E+10
+ >> total applied load pattern factors through step:       2
+      > unit_ten       300.00      constraints    2.0000    
+  
+
+       >> starting global newton solution for step:             3
+       >> no extrapolating displacements to start step:         3
+       >> delta forces for loads/displ/temps/creep. step:       3
+       >> computing tangent stiffness step, iteration:          3  1
+       >> running sparse solver step, iteration:                3  1
+            min, max diagonal terms:  0.730D+05 0.189D+06
+       >> updating strains/stress/forces step, iteration:       3  1
+
+    newton convergence tests step:       3 iteration:   1 @ wall time:      0.3
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.178388E+03 @ (node,dir):      18 X
+    test 2: norm of residual load vector:          0.45041E+03
+            norm of total load vector:             0.97793E+03
+            ratio*100:        46.05735   (failed)
+
+       >> computing tangent stiffness step, iteration:          3  2
+       >> running sparse solver step, iteration:                3  2
+            min, max diagonal terms:  0.381D+05 0.126D+06
+       >> updating strains/stress/forces step, iteration:       3  2
+
+    newton convergence tests step:       3 iteration:   2 @ wall time:      0.3
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.146900E+03 @ (node,dir):      10 X
+    test 2: norm of residual load vector:          0.37090E+03
+            norm of total load vector:             0.99905E+03
+            ratio*100:        37.12543   (failed)
+
+
+ >> iteration limit exceeded for current step:      3
+    (or adaptive sub-increment) or the solution appears to be diverging....
+
+
+ >>>>> analysis terminated.

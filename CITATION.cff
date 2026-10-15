@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you refer to this software, please cite it as below. critflaw is research software in development and is not verified or validated; see DISCLAIMER.md."
+title: "critflaw: probabilistic failure assessment diagrams for flaws in metallic structures"
+type: software
+authors:
+  - family-names: Mella
+    given-names: Rizgar
+version: 0.0.1
+date-released: 2026-10-15
+license: BSD-3-Clause
+repository-code: "https://github.com/RizgarMella/critflaw"
+keywords:
+  - failure assessment diagram
+  - engineering critical assessment
+  - fracture mechanics
+  - structural reliability
+  - fatigue crack growth
+  - probability of failure

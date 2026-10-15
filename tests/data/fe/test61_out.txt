@@ -1,0 +1,708 @@
+    *******************************************************************
+    **                                                               **
+    **                                                               **
+    **   W       W    AAAAA    RRRRRR    PPPPPP       33333  DDDD    **
+    **   W       W   A     A   R     R   P     P     3     3 D   D   **
+    **   W       W   A     A   R     R   P     P           3 D    D  **
+    **   W       W   A     A   R     R   P     P           3 D    D  **
+    **   W   W   W   AAAAAAA   RRRRRR    PPPPPP  ----  3333  D    D  **
+    **   W   W   W   A     A   R RR      P                 3 D    D  **
+    **   W   W   W   A     A   R   RR    P           3     3 D   D   **
+    **    WWW WWW    A     A   R     RR  P            33333  DDDD    **
+    **                                                               **
+    **     Linux (Intel Fortran)          -rel-    Release:  18.5.0  **
+    **     Code Build Number: 5120                                   **
+    **     Built on: Oct 04 2026 17:01:09                            **
+    **     University of Illinois @ U-C.    Civil & Env Engineering  **
+    **     Today: Wed Oct  7 20:52:42 2026                           **
+    **                                                               **
+    **     NOTICE:  Use of Program Implies Agreement with Terms &    **
+    **              Conditions Set Forth in File 'license_agreement' **
+    **              Enter the Command 'license' to Display Text      **
+    **                                                               **
+    *******************************************************************
+       c --------------------------------------------------------------------
+       c 
+       c    middle-crack tension specimen with sharp crack tip and linear-elastic,
+       c    functionally graded material
+       c 
+       c    --crack inclined at 36 degrees from horizontal
+       c    --crack length 2a = 0.8, in-plane size = 16 x 16 (infinite domain)
+       c    --user may impose plane strain conditions by constraining out-of
+       c      plane displacements
+       c    --model w/ 1 layer of 20-node brick elements in thickness direction
+       c    --quarter-point elements with collapsed faces surround crack tip
+       c    --20 sectors and 13 semi-circular rings surround each crack tip
+       c    --crack-tip elements are 0.007 in dimension
+       c    --thickness of mesh is 0.1
+       c    --imposed displacement 'delta' along top edge induces unit strain
+       c 
+       c    --material gradient varies in the x-direction according to
+       c      E(x) = E_0 * exp (beta * x), E_0 = 1.0, beta * a = 0.5
+       c 
+       c    --semi-analytical solution for normalized stress intensity factors
+       c      under plane-stress conditions are (Konda, N., Erdogan, F., 1994
+       c      The mixed-mode crack problem in a nonhomogeneous elastic medium,
+       c      Engineering Fracture Mechanics 47, 533-545)
+       c 
+       c      left crack:  KI/(delta*E_0*(pi*a)^0.5)  =  0.460
+       c                   KII/(delta*E_0*(pi*a)^0.5) = -0.365
+       c      right crack: KI/(delta*E_0*(pi*a)^0.5)  =  0.925
+       c                   KII/(delta*E_0*(pi*a)^0.5) = -0.548
+       c 
+       c    --WARP3D results are
+       c      left crack:  0.5118/(delta*E_0*(pi*a)^0.5)  =  0.457
+       c                   -0.4055/(delta*E_0*(pi*a)^0.5) = -0.362
+       c      right crack: 1.034/(delta*E_0*(pi*a)^0.5)   =  0.922
+       c                   -0.6172/(delta*E_0*(pi*a)^0.5) = -0.551
+       c 
+       c --------------------------------------------------------------------
+       c 
+       c 
+       structure mt
+       c 
+       material fgm
+         properties linear_elastic  e 'fgm' nu 0.3
+       number of nodes  14712 elements  2046
+       elements
+        1-2046 type q3disop linear material fgm,
+                    order 2x2x2 gausspts short
+       *input from 'test_61_fgm_props'
+  
+ >>>>> input file is: test_61_fgm_props
+       c 
+         functionally graded material properties, E varies in x-direction
+       c 
+       *echo off
+
+ >>>>> reached end of file.
+  
+ >>>>> input file is: test_61_incid_coord
+  
+
+...... Minimum and maximum coordinate values ......
+          X min:  -0.400000D+01  X max:   0.400000D+01
+          Y min:  -0.400000D+01  Y max:   0.400000D+01
+          Z min:  -0.573695D-06  Z max:   0.100000D+00
+  
+
+ >>>>> reached end of file.
+       *echo on
+       blocking  automatic
+
+ >> warning: there are duplicate entries in the incidences for
+            the following elements:
+
+      272      273      274      275      276      277      347      348
+      349      350      351      352      353      354      355      356
+      357      358      359      360      801      802      803      804
+      805      806      807      808      809      810      811      812
+      813      814      815      816      817      818      819      820
+
+>> Maximum element-to-node connectivity:  20 @ node:    2404
+
+
+       c 
+       c roller at middle of left side, pin at middle of right side
+       c 
+        constraints
+>> Check element blocking ...
+     ... Elements have scalar blocking
+
+       c for bottom edge of specimen
+       *echo off
+       c 
+       c top edge displacement corresponding to unit strain in y direction
+       c 
+        plane y = 4.0 v = 8.0
+          >>>> Distances (x,y,z) for proximity test:        0.000080       0.000080       0.000001
+
+>> Plane command applied constraints to:   203 nodes...
+
+
+       c 
+       c the following constraints impose plane strain if desired
+       c 
+       c  1-14712 w = 0.0
+       c 
+        loading strain
+         nonlinear
+           step 1 constraints 1.0
+       c 
+        nonlinear analysis parameters
+          solution technique direct sparse
+          minimum iterations 1
+          maximum iterations 1
+          convergence test norm res tol 0.005 max res tol 0.05  $ v. tight
+          time step 1.0e10
+          trace solution on
+       c 
+          compute displacements for loading strain step 1
+
+       >> computing structural diagonal mass (@ t=0)
+
+ >>>>> warning: the determinant of the jacobian matrix for gauss point     13
+       of element    807 is non-positive. current value: -0.38927E-09
+
+
+ >>>>> warning: the determinant of the jacobian matrix for gauss point     14
+       of element    807 is non-positive. current value: -0.38927E-09
+
+          >>> total model mass (computed):   0.000000E+00
+          >>> total model volume:            0.640000E+01
+
+       >> starting global newton solution for step:             1
+       >> no extrapolating displacements to start step:         1
+       >> delta forces for loads/displ/temps/creep. step:       1
+       >> computing tangent stiffness step, iteration:          1  1
+       >> running sparse solver step, iteration:                1  1
+          >> solver wall time statistics (secs):
+               number of MKL threads used               4
+               MKL version, build:      2025.3 20251007
+               Pardiso starting work         @       0.13
+               finished dof setup            @       0.13
+               non-zero term counts finished @       0.14
+               number of equations                  43726
+               non-zero terms in profile          2575960
+               building sparse ptrs, indexes @       0.14
+               k_ptrs, k_indexes done        @       0.16
+               sparse [k] assembly done      @       0.17
+               load vector assembly done     @       0.17
+               Pardiso solver initializing   @       0.18
+               reorder-symbolic factor. done @       0.56
+               terms in factored matrix (M):        14.44
+               factorization op count (GFlop):       6.96
+               reordering memory (GB):               0.10
+                 min diagonal term:  0.785D-03
+                 max diagonal term:  0.515D+03
+               numeric factor/solve done     @       0.69
+       >> updating strains/stress/forces step, iteration:       1  1
+
+    newton convergence tests step:       1 iteration:   1 @ wall time:      0.7
+    ---------------------------------------------------------------------------
+    completed fraction over step:  1.0000
+    maximum residual force:   0.108713E-11 @ (node,dir):     470 Y
+    test 2: norm of residual load vector:          0.29770E-11
+            norm of total load vector:             0.65548E+01
+            ratio*100:         0.00000   (passed)
+
+    test 4: max entry in residual load vector:     0.10871E-11
+            average of all nodal forces:           0.10843E-01
+            ratio*100:         0.00000   (passed)
+
+
+ >> solution for step:       1 converged:  1 iters.   model time:  0.100000E+11
+ >> total applied load pattern factors through step:       1
+      > constraints    1.0000    
+  
+       c 
+       c   output stresses for elements all
+       c   output patran binary stresses
+       c   output patran binary displacements
+       c 
+          domain right
+               normal plane nx 0.587785 ny 0.809017 nz 0.0
+               front nodes 2405 2404 2406 q3disop verify
+               q-values automatic ring 1-13
+       	plane stress values for interaction integral
+               function type d
+          compute domain interaction integrals
+
+
+                         domain-integral post-processing
+                         -------------------------------
+
+ structure: mt      
+ loading: strain       step:     1        model analysis time:   0.100000E+11
+ domain id: right                         current elapsed wall time:      0.7
+ box tolerance ratio:  0.3000E-03
+ box tolerance:        0.1500E-04
+
+ coincident nodes on crack front:
+
+   listed node           /--- coincident nodes ---/
+
+            2405
+              none
+            2404
+              none
+            2406
+              none
+
+ area under q along front:        0.100000E+00
+ length of crack front segment:   0.100000E+00
+ Young's modulus at crack front node      2405 :  0.149900E+01
+ Poisson's ratio at crack front node      2405 :  0.300000E+00
+
+
+                                              J-integral components
+                                           ===========================
+ domain        dm1          dm2          dm3          dm4          dm5          dm6          dm7          dm8       total J   killed ele
+     1     0.7355E-02   0.8971E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00  -0.3862E-02  -0.3278E-02   0.8992E+00   (  0)
+     2     0.8546E-02   0.8860E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00  -0.2074E-02  -0.4590E-02   0.9048E+00   (  0)
+     3     0.9935E-02   0.8818E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00  -0.6667E-03  -0.9807E-02   0.8764E+00   (  0)
+     4     0.1109E-01   0.8776E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00  -0.8863E-04  -0.1111E-01   0.8765E+00   (  0)
+     5     0.1264E-01   0.8710E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.5393E-03  -0.1262E-01   0.8765E+00   (  0)
+     6     0.1460E-01   0.8630E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.1363E-02  -0.1460E-01   0.8766E+00   (  0)
+     7     0.1717E-01   0.8523E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.2428E-02  -0.1717E-01   0.8766E+00   (  0)
+     8     0.2056E-01   0.8383E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3831E-02  -0.2056E-01   0.8766E+00   (  0)
+     9     0.2509E-01   0.8199E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.5670E-02  -0.2509E-01   0.8766E+00   (  0)
+    10     0.3097E-01   0.7972E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.7940E-02  -0.3096E-01   0.8766E+00   (  0)
+    11     0.3871E-01   0.7698E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.1069E-01  -0.3871E-01   0.8767E+00   (  0)
+    12     0.4925E-01   0.7375E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.1392E-01  -0.4925E-01   0.8767E+00   (  0)
+    13     0.6367E-01   0.7051E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.1713E-01  -0.6366E-01   0.8765E+00   (  0)
+
+    average:  0.8805E+00   minimum:  0.8764E+00   maximum: 0.9048E+00     (right)
+  0.8805E+00   0.8764E+00   0.9048E+00
+
+ * dm1: stress work density term
+ * dm2: traction-displacement derivative term
+ * dm3: kinetic energy term
+ * dm4: acceleration & velocity gradient term
+ * dm5: crack face loading term
+ * dm6: thermal loading term (zero for an fgm)
+ * dm7: stress times displacement gradient term (zero if not an fgm)
+ * dm8: derivative of stress work density (zero if not an fgm)
+ * ( ): number of killed elements skipped
+
+ * note: automatic domain builder cannot detect
+         domains that reach a boundary
+
+
+
+
+               Static I-values
+                               I-integral components
+                          -- KI = 1, KII = 0, KIII = 0, plane stress --
+
+ domain        II1          II2          II3          II4          II5          II6          II7          II8       total I     KI (pstrs) killed ele
+     1     0.5899E-01   0.5623E-01   0.2231E-01   0.1648E-03   0.1932E-04  -0.2356E-03   0.0000E+00   0.0000E+00   0.1375E+01   0.1030E+01   (  0)
+     2     0.5826E-01   0.5557E-01   0.2436E-01   0.7964E-03  -0.1737E-03  -0.8375E-03   0.0000E+00   0.0000E+00   0.1380E+01   0.1034E+01   (  0)
+     3     0.5846E-01   0.5548E-01   0.2445E-01   0.6338E-03   0.4745E-03  -0.1512E-02   0.0000E+00   0.0000E+00   0.1380E+01   0.1034E+01   (  0)
+     4     0.5884E-01   0.5499E-01   0.2480E-01   0.2615E-03   0.1352E-02  -0.2223E-02   0.0000E+00   0.0000E+00   0.1380E+01   0.1034E+01   (  0)
+     5     0.5940E-01   0.5433E-01   0.2516E-01  -0.2988E-03   0.2558E-02  -0.3132E-02   0.0000E+00   0.0000E+00   0.1380E+01   0.1034E+01   (  0)
+     6     0.6014E-01   0.5349E-01   0.2560E-01  -0.1043E-02   0.4118E-02  -0.4291E-02   0.0000E+00   0.0000E+00   0.1380E+01   0.1034E+01   (  0)
+     7     0.6111E-01   0.5241E-01   0.2615E-01  -0.2012E-02   0.6115E-02  -0.5769E-02   0.0000E+00   0.0000E+00   0.1380E+01   0.1034E+01   (  0)
+     8     0.6236E-01   0.5108E-01   0.2684E-01  -0.3258E-02   0.8656E-02  -0.7661E-02   0.0000E+00   0.0000E+00   0.1380E+01   0.1034E+01   (  0)
+     9     0.6395E-01   0.4942E-01   0.2770E-01  -0.4855E-02   0.1190E-01  -0.1010E-01   0.0000E+00   0.0000E+00   0.1380E+01   0.1034E+01   (  0)
+    10     0.6599E-01   0.4748E-01   0.2864E-01  -0.6891E-02   0.1596E-01  -0.1317E-01   0.0000E+00   0.0000E+00   0.1380E+01   0.1034E+01   (  0)
+    11     0.6857E-01   0.4517E-01   0.2976E-01  -0.9473E-02   0.2106E-01  -0.1707E-01   0.0000E+00   0.0000E+00   0.1380E+01   0.1034E+01   (  0)
+    12     0.7189E-01   0.4233E-01   0.3120E-01  -0.1279E-01   0.2757E-01  -0.2218E-01   0.0000E+00   0.0000E+00   0.1380E+01   0.1034E+01   (  0)
+    13     0.7619E-01   0.3884E-01   0.3305E-01  -0.1709E-01   0.3595E-01  -0.2893E-01   0.0000E+00   0.0000E+00   0.1380E+01   0.1034E+01   (  0)
+
+    average:  0.1034E+01   minimum:  0.1030E+01   maximum: 0.1034E+01     (right)
+  0.1034E+01   0.1030E+01   0.1034E+01
+                               I-integral components
+                          -- KI = 0, KII = 1, KIII = 0, plane stress --
+
+ domain        II1          II2          II3          II4          II5          II6          II7          II8       total I     KII (pstrs) killed ele
+     1    -0.4976E-01  -0.4544E-01   0.1228E-01  -0.2234E-03  -0.1196E-04   0.3246E-03   0.0000E+00   0.0000E+00  -0.8283E+00  -0.6208E+00   (  0)
+     2    -0.4926E-01  -0.4775E-01   0.1440E-01  -0.6340E-03  -0.1766E-03   0.1143E-02   0.0000E+00   0.0000E+00  -0.8228E+00  -0.6167E+00   (  0)
+     3    -0.4915E-01  -0.4673E-01   0.1290E-01  -0.7816E-03  -0.6713E-03   0.2071E-02   0.0000E+00   0.0000E+00  -0.8236E+00  -0.6173E+00   (  0)
+     4    -0.4920E-01  -0.4625E-01   0.1219E-01  -0.7294E-03  -0.1408E-02   0.3050E-02   0.0000E+00   0.0000E+00  -0.8235E+00  -0.6172E+00   (  0)
+     5    -0.4933E-01  -0.4537E-01   0.1107E-01  -0.5995E-03  -0.2403E-02   0.4290E-02   0.0000E+00   0.0000E+00  -0.8235E+00  -0.6172E+00   (  0)
+     6    -0.4954E-01  -0.4428E-01   0.9720E-02  -0.3870E-03  -0.3715E-02   0.5861E-02   0.0000E+00   0.0000E+00  -0.8235E+00  -0.6172E+00   (  0)
+     7    -0.4984E-01  -0.4285E-01   0.7989E-02  -0.9219E-04  -0.5409E-02   0.7858E-02   0.0000E+00   0.0000E+00  -0.8235E+00  -0.6172E+00   (  0)
+     8    -0.5023E-01  -0.4101E-01   0.5778E-02   0.3010E-03  -0.7580E-02   0.1039E-01   0.0000E+00   0.0000E+00  -0.8235E+00  -0.6172E+00   (  0)
+     9    -0.5075E-01  -0.3859E-01   0.2917E-02   0.8180E-03  -0.1036E-01   0.1362E-01   0.0000E+00   0.0000E+00  -0.8235E+00  -0.6172E+00   (  0)
+    10    -0.5142E-01  -0.3545E-01  -0.7574E-03   0.1484E-02  -0.1382E-01   0.1761E-01   0.0000E+00   0.0000E+00  -0.8235E+00  -0.6172E+00   (  0)
+    11    -0.5230E-01  -0.3137E-01  -0.5469E-02   0.2371E-02  -0.1818E-01   0.2260E-01   0.0000E+00   0.0000E+00  -0.8235E+00  -0.6172E+00   (  0)
+    12    -0.5352E-01  -0.2592E-01  -0.1164E-01   0.3591E-02  -0.2377E-01   0.2892E-01   0.0000E+00   0.0000E+00  -0.8235E+00  -0.6172E+00   (  0)
+    13    -0.5522E-01  -0.1863E-01  -0.1976E-01   0.5292E-02  -0.3097E-01   0.3694E-01   0.0000E+00   0.0000E+00  -0.8234E+00  -0.6172E+00   (  0)
+
+    average: -0.6174E+00   minimum: -0.6208E+00   maximum:-0.6167E+00     (right)
+ -0.6174E+00  -0.6208E+00  -0.6167E+00
+                               I-integral components
+                          -- KI = 0, KII = 0, KIII = 1 --
+
+ domain        II1          II2          II3          II4          II5          II6          II7          II8       total I        KIII    killed ele
+     1    -0.5587E-07  -0.9229E-07   0.5928E-07   0.1048E-06  -0.1052E-06   0.3858E-09   0.0000E+00   0.0000E+00  -0.8889E-06  -0.5125E-06   (  0)
+     2     0.8138E-08  -0.7474E-07   0.5295E-07   0.4118E-07  -0.4125E-07  -0.1424E-09   0.0000E+00   0.0000E+00  -0.1387E-06  -0.7995E-07   (  0)
+     3     0.2153E-07  -0.8846E-07   0.1939E-07   0.2762E-07  -0.2699E-07  -0.8444E-09   0.0000E+00   0.0000E+00  -0.4776E-06  -0.2753E-06   (  0)
+     4     0.2670E-07  -0.9990E-07   0.3065E-07   0.2244E-07  -0.2107E-07  -0.1594E-08   0.0000E+00   0.0000E+00  -0.4277E-06  -0.2466E-06   (  0)
+     5     0.3048E-07  -0.9845E-07   0.1222E-07   0.1866E-07  -0.1625E-07  -0.2606E-08   0.0000E+00   0.0000E+00  -0.5593E-06  -0.3225E-06   (  0)
+     6     0.3235E-07  -0.1300E-06   0.2186E-07   0.1679E-07  -0.1313E-07  -0.3826E-08   0.0000E+00   0.0000E+00  -0.7599E-06  -0.4381E-06   (  0)
+     7     0.3621E-07  -0.1965E-06  -0.5997E-08   0.1294E-07  -0.7443E-08  -0.5760E-08   0.0000E+00   0.0000E+00  -0.1666E-05  -0.9603E-06   (  0)
+     8     0.3644E-07  -0.2274E-06  -0.3634E-07   0.1270E-07  -0.5148E-08  -0.7706E-08   0.0000E+00   0.0000E+00  -0.2275E-05  -0.1312E-05   (  0)
+     9     0.3416E-07  -0.2067E-06  -0.2145E-07   0.1498E-07  -0.5784E-08  -0.9526E-08   0.0000E+00   0.0000E+00  -0.1943E-05  -0.1120E-05   (  0)
+    10     0.2980E-07  -0.1565E-06  -0.6485E-07   0.1935E-07  -0.9285E-08  -0.1076E-07   0.0000E+00   0.0000E+00  -0.1922E-05  -0.1108E-05   (  0)
+    11     0.2251E-07  -0.6282E-07  -0.5669E-07   0.2664E-07  -0.1623E-07  -0.1087E-07   0.0000E+00   0.0000E+00  -0.9747E-06  -0.5619E-06   (  0)
+    12     0.1837E-07   0.8707E-07  -0.4704E-07   0.3077E-07  -0.1985E-07  -0.1180E-07   0.0000E+00   0.0000E+00   0.5753E-06   0.3317E-06   (  0)
+    13     0.1545E-07   0.3325E-06  -0.4075E-07   0.3370E-07  -0.2245E-07  -0.1312E-07   0.0000E+00   0.0000E+00   0.3053E-05   0.1760E-05   (  0)
+
+    average: -0.3727E-06   minimum: -0.1312E-05   maximum: 0.1760E-05     (right)
+ -0.3727E-06  -0.1312E-05   0.1760E-05
+
+
+
+          J-values computed from mixed-mode stress intensity factors KI, KII and KIII.
+          KI- and KII-values correspond to plane stress conditions.
+
+ domain   J plane stress
+
+     1      0.9655E+00
+
+     2      0.9672E+00
+
+     3      0.9678E+00
+
+     4      0.9679E+00
+
+     5      0.9679E+00
+
+     6      0.9679E+00
+
+     7      0.9679E+00
+
+     8      0.9679E+00
+
+     9      0.9679E+00
+
+    10      0.9679E+00
+
+    11      0.9679E+00
+
+    12      0.9679E+00
+
+    13      0.9679E+00
+
+
+                               I-integral components
+                          --T-stress (plane stress auxiliary fields)--
+
+ domain        II1          II2          II3          II4          II5          II6          II7          II8       total I    T11 (pstrs)      T33     killed ele
+     1    -0.1974E+00   0.5438E+00  -0.3726E+00  -0.1058E+01   0.1058E+01   0.1131E-03   0.0000E+00   0.0000E+00  -0.2589E+00  -0.3882E+00   0.0000E+00   (  0)
+     2    -0.8293E-01   0.2078E+00  -0.1424E+00  -0.1172E+01   0.1172E+01   0.5064E-03   0.0000E+00   0.0000E+00  -0.1680E+00  -0.2518E+00   0.0000E+00   (  0)
+     3    -0.6375E-01   0.1478E+00  -0.1020E+00  -0.1191E+01   0.1192E+01   0.8781E-03   0.0000E+00   0.0000E+00  -0.1693E+00  -0.2538E+00   0.0000E+00   (  0)
+     4    -0.5433E-01   0.1185E+00  -0.8245E-01  -0.1201E+01   0.1201E+01   0.1192E-02   0.0000E+00   0.0000E+00  -0.1691E+00  -0.2534E+00   0.0000E+00   (  0)
+     5    -0.4745E-01   0.9739E-01  -0.6849E-01  -0.1208E+01   0.1208E+01   0.1516E-02   0.0000E+00   0.0000E+00  -0.1690E+00  -0.2533E+00   0.0000E+00   (  0)
+     6    -0.4211E-01   0.8096E-01  -0.5774E-01  -0.1213E+01   0.1213E+01   0.1878E-02   0.0000E+00   0.0000E+00  -0.1690E+00  -0.2533E+00   0.0000E+00   (  0)
+     7    -0.3781E-01   0.6777E-01  -0.4924E-01  -0.1217E+01   0.1218E+01   0.2259E-02   0.0000E+00   0.0000E+00  -0.1689E+00  -0.2532E+00   0.0000E+00   (  0)
+     8    -0.3424E-01   0.5686E-01  -0.4236E-01  -0.1221E+01   0.1221E+01   0.2667E-02   0.0000E+00   0.0000E+00  -0.1689E+00  -0.2532E+00   0.0000E+00   (  0)
+     9    -0.3120E-01   0.4766E-01  -0.3672E-01  -0.1224E+01   0.1224E+01   0.3121E-02   0.0000E+00   0.0000E+00  -0.1689E+00  -0.2531E+00   0.0000E+00   (  0)
+    10    -0.2877E-01   0.3990E-01  -0.3203E-01  -0.1226E+01   0.1227E+01   0.3626E-02   0.0000E+00   0.0000E+00  -0.1688E+00  -0.2531E+00   0.0000E+00   (  0)
+    11    -0.2674E-01   0.3325E-01  -0.2816E-01  -0.1228E+01   0.1229E+01   0.4185E-02   0.0000E+00   0.0000E+00  -0.1688E+00  -0.2530E+00   0.0000E+00   (  0)
+    12    -0.2488E-01   0.2734E-01  -0.2503E-01  -0.1230E+01   0.1231E+01   0.4825E-02   0.0000E+00   0.0000E+00  -0.1688E+00  -0.2530E+00   0.0000E+00   (  0)
+    13    -0.2321E-01   0.2204E-01  -0.2255E-01  -0.1232E+01   0.1233E+01   0.5574E-02   0.0000E+00   0.0000E+00  -0.1687E+00  -0.2529E+00   0.0000E+00   (  0)
+
+    average:      minimum:      maximum:     (right)
+ -0.2635E+00  -0.3882E+00  -0.2518E+00
+  0.0000E+00   0.0000E+00   0.0000E+00
+                               I-integral components
+                          --T-stress (anti-plane shear auxiliary fields)--
+
+ domain        II1          II2          II3          II4          II5          II6          II7          II8       total I        T13     killed ele
+     1    -0.1102E-05  -0.5005E-05   0.1113E-05   0.1252E-04  -0.1252E-04   0.1519E-08   0.0000E+00   0.0000E+00  -0.4995E-04  -0.2880E-04   (  0)
+     2    -0.6219E-06  -0.2671E-05   0.6212E-06   0.1236E-04  -0.1236E-04   0.1738E-08   0.0000E+00   0.0000E+00  -0.2670E-04  -0.1540E-04   (  0)
+     3    -0.3430E-06  -0.2545E-05   0.3452E-06   0.1208E-04  -0.1208E-04   0.1805E-08   0.0000E+00   0.0000E+00  -0.2539E-04  -0.1464E-04   (  0)
+     4    -0.1970E-06  -0.2424E-05   0.1979E-06   0.1194E-04  -0.1193E-04   0.1906E-08   0.0000E+00   0.0000E+00  -0.2419E-04  -0.1395E-04   (  0)
+     5    -0.1004E-06  -0.2424E-05   0.1004E-06   0.1184E-04  -0.1184E-04   0.1929E-08   0.0000E+00   0.0000E+00  -0.2418E-04  -0.1394E-04   (  0)
+     6    -0.3962E-07  -0.2362E-05   0.3833E-07   0.1178E-04  -0.1177E-04   0.1929E-08   0.0000E+00   0.0000E+00  -0.2356E-04  -0.1359E-04   (  0)
+     7    -0.1242E-07  -0.2364E-05   0.9684E-08   0.1175E-04  -0.1175E-04   0.1885E-08   0.0000E+00   0.0000E+00  -0.2359E-04  -0.1360E-04   (  0)
+     8     0.1543E-08  -0.2417E-05  -0.4954E-08   0.1174E-04  -0.1173E-04   0.1820E-08   0.0000E+00   0.0000E+00  -0.2412E-04  -0.1391E-04   (  0)
+     9     0.7310E-08  -0.2503E-05  -0.1143E-07   0.1173E-04  -0.1173E-04   0.1709E-08   0.0000E+00   0.0000E+00  -0.2499E-04  -0.1441E-04   (  0)
+    10     0.1176E-08  -0.2541E-05  -0.7148E-08   0.1174E-04  -0.1173E-04   0.1573E-08   0.0000E+00   0.0000E+00  -0.2540E-04  -0.1464E-04   (  0)
+    11    -0.2536E-08  -0.2505E-05  -0.4582E-08   0.1174E-04  -0.1174E-04   0.1463E-08   0.0000E+00   0.0000E+00  -0.2506E-04  -0.1445E-04   (  0)
+    12    -0.5872E-08  -0.2446E-05  -0.1722E-08   0.1175E-04  -0.1174E-04   0.1428E-08   0.0000E+00   0.0000E+00  -0.2449E-04  -0.1412E-04   (  0)
+    13    -0.9042E-08  -0.2360E-05   0.1733E-08   0.1175E-04  -0.1175E-04   0.1514E-08   0.0000E+00   0.0000E+00  -0.2365E-04  -0.1363E-04   (  0)
+
+    average: -0.1531E-04   minimum: -0.2880E-04   maximum:-0.1359E-04     (right)
+ -0.1531E-04  -0.2880E-04  -0.1359E-04
+
+ * II1: stress * deriv of aux. displ.
+ * II2: aux stress * derivative of displacement
+ * II3: mixed strain energy density (aux stress * strain)
+ * II4: stress * 2nd deriv of aux displ
+ * II5: stress * deriv of aux strain)
+ * II6: deriv of constitutive tensor * strain * auxstrain
+ * II7: thermal strains (not yet implemented)
+ * II8: traction * deriv of aux displ
+ * ( ): number of killed elements skipped
+
+ * note: automatic domain builder cannot detect
+         domains that reach a boundary
+
+
+>>> Completed domain integral calculations
+
+       c 
+          domain left
+               normal plane nx -0.587785 ny -0.809017 nz 0.0
+               front nodes 5632 5631 5633 q3disop verify
+               q-values automatic ring 1-13
+       	plane stress values for interaction integral
+               function type d
+          compute domain interaction integrals
+
+
+                         domain-integral post-processing
+                         -------------------------------
+
+ structure: mt      
+ loading: strain       step:     1        model analysis time:   0.100000E+11
+ domain id: left                          current elapsed wall time:      0.7
+ box tolerance ratio:  0.3000E-03
+ box tolerance:        0.1500E-04
+
+ coincident nodes on crack front:
+
+   listed node           /--- coincident nodes ---/
+
+            5632
+              none
+            5631
+              none
+            5633
+              none
+
+ area under q along front:        0.100000E+00
+ length of crack front segment:   0.100000E+00
+ Young's modulus at crack front node      5632 :  0.667300E+00
+ Poisson's ratio at crack front node      5632 :  0.300000E+00
+
+
+                                              J-integral components
+                                           ===========================
+ domain        dm1          dm2          dm3          dm4          dm5          dm6          dm7          dm8       total J   killed ele
+     1     0.2484E-02   0.6122E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00  -0.4577E-02  -0.1238E-02   0.5789E+00   (  0)
+     2     0.2637E-02   0.6041E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00  -0.1979E-02  -0.1434E-02   0.5963E+00   (  0)
+     3     0.3750E-02   0.5907E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00  -0.3527E-03  -0.3659E-02   0.5881E+00   (  0)
+     4     0.4407E-02   0.5800E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.8585E-03  -0.4435E-02   0.5883E+00   (  0)
+     5     0.5262E-02   0.5657E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.2255E-02  -0.5250E-02   0.5883E+00   (  0)
+     6     0.6220E-02   0.5489E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.3948E-02  -0.6224E-02   0.5883E+00   (  0)
+     7     0.7332E-02   0.5288E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.5956E-02  -0.7330E-02   0.5884E+00   (  0)
+     8     0.8575E-02   0.5050E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.8335E-02  -0.8576E-02   0.5884E+00   (  0)
+     9     0.9917E-02   0.4772E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.1111E-01  -0.9917E-02   0.5884E+00   (  0)
+    10     0.1121E-01   0.4464E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.1420E-01  -0.1121E-01   0.5884E+00   (  0)
+    11     0.1225E-01   0.4130E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.1754E-01  -0.1225E-01   0.5884E+00   (  0)
+    12     0.1264E-01   0.3779E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.2105E-01  -0.1264E-01   0.5884E+00   (  0)
+    13     0.1140E-01   0.3462E-01   0.0000E+00   0.0000E+00   0.0000E+00   0.0000E+00   0.2419E-01  -0.1139E-01   0.5883E+00   (  0)
+
+    average:  0.5882E+00   minimum:  0.5789E+00   maximum: 0.5963E+00     (left)
+  0.5882E+00   0.5789E+00   0.5963E+00
+
+ * dm1: stress work density term
+ * dm2: traction-displacement derivative term
+ * dm3: kinetic energy term
+ * dm4: acceleration & velocity gradient term
+ * dm5: crack face loading term
+ * dm6: thermal loading term (zero for an fgm)
+ * dm7: stress times displacement gradient term (zero if not an fgm)
+ * dm8: derivative of stress work density (zero if not an fgm)
+ * ( ): number of killed elements skipped
+
+ * note: automatic domain builder cannot detect
+         domains that reach a boundary
+
+
+
+
+               Static I-values
+                               I-integral components
+                          -- KI = 1, KII = 0, KIII = 0, plane stress --
+
+ domain        II1          II2          II3          II4          II5          II6          II7          II8       total I     KI (pstrs) killed ele
+     1     0.6591E-01   0.6222E-01   0.2475E-01  -0.6033E-04  -0.1505E-03   0.2702E-03   0.0000E+00   0.0000E+00   0.1529E+01   0.5103E+00   (  0)
+     2     0.6467E-01   0.6152E-01   0.2693E-01   0.9303E-03  -0.1628E-02   0.9330E-03   0.0000E+00   0.0000E+00   0.1534E+01   0.5117E+00   (  0)
+     3     0.6458E-01   0.6131E-01   0.2704E-01   0.1061E-02  -0.2290E-02   0.1663E-02   0.0000E+00   0.0000E+00   0.1534E+01   0.5117E+00   (  0)
+     4     0.6469E-01   0.6064E-01   0.2742E-01   0.9527E-03  -0.2743E-02   0.2440E-02   0.0000E+00   0.0000E+00   0.1534E+01   0.5118E+00   (  0)
+     5     0.6492E-01   0.5976E-01   0.2779E-01   0.7270E-03  -0.3225E-02   0.3419E-02   0.0000E+00   0.0000E+00   0.1534E+01   0.5118E+00   (  0)
+     6     0.6522E-01   0.5865E-01   0.2826E-01   0.4255E-03  -0.3816E-02   0.4661E-02   0.0000E+00   0.0000E+00   0.1534E+01   0.5118E+00   (  0)
+     7     0.6560E-01   0.5726E-01   0.2882E-01   0.4769E-04  -0.4568E-02   0.6239E-02   0.0000E+00   0.0000E+00   0.1534E+01   0.5118E+00   (  0)
+     8     0.6605E-01   0.5554E-01   0.2952E-01  -0.4002E-03  -0.5561E-02   0.8256E-02   0.0000E+00   0.0000E+00   0.1534E+01   0.5118E+00   (  0)
+     9     0.6656E-01   0.5344E-01   0.3036E-01  -0.9124E-03  -0.6887E-02   0.1084E-01   0.0000E+00   0.0000E+00   0.1534E+01   0.5118E+00   (  0)
+    10     0.6715E-01   0.5099E-01   0.3127E-01  -0.1504E-02  -0.8586E-02   0.1408E-01   0.0000E+00   0.0000E+00   0.1534E+01   0.5118E+00   (  0)
+    11     0.6778E-01   0.4810E-01   0.3232E-01  -0.2130E-02  -0.1085E-01   0.1818E-01   0.0000E+00   0.0000E+00   0.1534E+01   0.5118E+00   (  0)
+    12     0.6835E-01   0.4457E-01   0.3369E-01  -0.2700E-02  -0.1404E-01   0.2353E-01   0.0000E+00   0.0000E+00   0.1534E+01   0.5118E+00   (  0)
+    13     0.6877E-01   0.4026E-01   0.3548E-01  -0.3117E-02  -0.1854E-01   0.3055E-01   0.0000E+00   0.0000E+00   0.1534E+01   0.5118E+00   (  0)
+
+    average:  0.5117E+00   minimum:  0.5103E+00   maximum: 0.5118E+00     (left)
+  0.5117E+00   0.5103E+00   0.5118E+00
+                               I-integral components
+                          -- KI = 0, KII = 1, KIII = 0, plane stress --
+
+ domain        II1          II2          II3          II4          II5          II6          II7          II8       total I     KII (pstrs) killed ele
+     1    -0.7354E-01  -0.6632E-01   0.1766E-01  -0.1277E-02   0.1650E-02  -0.4927E-03   0.0000E+00   0.0000E+00  -0.1223E+01  -0.4081E+00   (  0)
+     2    -0.7196E-01  -0.6932E-01   0.2030E-01  -0.2753E-02   0.3993E-02  -0.1679E-02   0.0000E+00   0.0000E+00  -0.1214E+01  -0.4051E+00   (  0)
+     3    -0.7117E-01  -0.6683E-01   0.1725E-01  -0.3603E-02   0.5788E-02  -0.2995E-02   0.0000E+00   0.0000E+00  -0.1216E+01  -0.4056E+00   (  0)
+     4    -0.7063E-01  -0.6518E-01   0.1546E-01  -0.4142E-02   0.7313E-02  -0.4358E-02   0.0000E+00   0.0000E+00  -0.1215E+01  -0.4055E+00   (  0)
+     5    -0.7007E-01  -0.6276E-01   0.1294E-01  -0.4703E-02   0.9098E-02  -0.6053E-02   0.0000E+00   0.0000E+00  -0.1215E+01  -0.4055E+00   (  0)
+     6    -0.6946E-01  -0.5983E-01   0.9988E-02  -0.5309E-02   0.1121E-01  -0.8142E-02   0.0000E+00   0.0000E+00  -0.1215E+01  -0.4055E+00   (  0)
+     7    -0.6878E-01  -0.5618E-01   0.6379E-02  -0.5997E-02   0.1375E-01  -0.1071E-01   0.0000E+00   0.0000E+00  -0.1215E+01  -0.4055E+00   (  0)
+     8    -0.6798E-01  -0.5175E-01   0.2034E-02  -0.6792E-02   0.1681E-01  -0.1386E-01   0.0000E+00   0.0000E+00  -0.1215E+01  -0.4055E+00   (  0)
+     9    -0.6706E-01  -0.4638E-01  -0.3181E-02  -0.7718E-02   0.2049E-01  -0.1770E-01   0.0000E+00   0.0000E+00  -0.1215E+01  -0.4055E+00   (  0)
+    10    -0.6600E-01  -0.4005E-01  -0.9259E-02  -0.8778E-02   0.2481E-01  -0.2227E-01   0.0000E+00   0.0000E+00  -0.1215E+01  -0.4055E+00   (  0)
+    11    -0.6480E-01  -0.3270E-01  -0.1625E-01  -0.9975E-02   0.2990E-01  -0.2772E-01   0.0000E+00   0.0000E+00  -0.1215E+01  -0.4055E+00   (  0)
+    12    -0.6343E-01  -0.2419E-01  -0.2424E-01  -0.1135E-01   0.3602E-01  -0.3436E-01   0.0000E+00   0.0000E+00  -0.1215E+01  -0.4055E+00   (  0)
+    13    -0.6185E-01  -0.1458E-01  -0.3314E-01  -0.1293E-01   0.4346E-01  -0.4252E-01   0.0000E+00   0.0000E+00  -0.1215E+01  -0.4055E+00   (  0)
+
+    average: -0.4057E+00   minimum: -0.4081E+00   maximum:-0.4051E+00     (left)
+ -0.4057E+00  -0.4081E+00  -0.4051E+00
+                               I-integral components
+                          -- KI = 0, KII = 0, KIII = 1 --
+
+ domain        II1          II2          II3          II4          II5          II6          II7          II8       total I        KIII    killed ele
+     1     0.3289E-08  -0.3554E-07   0.8001E-07   0.1542E-06  -0.1543E-06   0.2217E-09   0.0000E+00   0.0000E+00   0.4791E-06   0.1230E-06   (  0)
+     2     0.8722E-07   0.1344E-07   0.5646E-07   0.7050E-07  -0.7195E-07   0.2198E-08   0.0000E+00   0.0000E+00   0.1579E-05   0.4052E-06   (  0)
+     3     0.9776E-07   0.1538E-07   0.3802E-09   0.5977E-07  -0.6299E-07   0.4261E-08   0.0000E+00   0.0000E+00   0.1146E-05   0.2940E-06   (  0)
+     4     0.9734E-07   0.1921E-07   0.1231E-07   0.6019E-07  -0.6508E-07   0.6205E-08   0.0000E+00   0.0000E+00   0.1302E-05   0.3341E-06   (  0)
+     5     0.9488E-07   0.4195E-07  -0.1613E-07   0.6266E-07  -0.6951E-07   0.8427E-08   0.0000E+00   0.0000E+00   0.1223E-05   0.3138E-06   (  0)
+     6     0.8983E-07   0.2058E-07  -0.2212E-08   0.6770E-07  -0.7669E-07   0.1082E-07   0.0000E+00   0.0000E+00   0.1100E-05   0.2824E-06   (  0)
+     7     0.8766E-07  -0.4179E-07  -0.3498E-07   0.6988E-07  -0.8169E-07   0.1404E-07   0.0000E+00   0.0000E+00   0.1312E-06   0.3367E-07   (  0)
+     8     0.8195E-07  -0.5501E-07  -0.6841E-07   0.7559E-07  -0.9033E-07   0.1707E-07   0.0000E+00   0.0000E+00  -0.3914E-06  -0.1005E-06   (  0)
+     9     0.7370E-07  -0.9242E-08  -0.4251E-07   0.8384E-07  -0.1009E-06   0.1979E-07   0.0000E+00   0.0000E+00   0.2467E-06   0.6333E-07   (  0)
+    10     0.6430E-07   0.5340E-07  -0.9207E-07   0.9324E-07  -0.1118E-06   0.2191E-07   0.0000E+00   0.0000E+00   0.2897E-06   0.7434E-07   (  0)
+    11     0.5374E-07   0.1443E-06  -0.7600E-07   0.1038E-06  -0.1231E-06   0.2263E-07   0.0000E+00   0.0000E+00   0.1254E-05   0.3220E-06   (  0)
+    12     0.4674E-07   0.2640E-06  -0.5828E-07   0.1108E-06  -0.1310E-06   0.2434E-07   0.0000E+00   0.0000E+00   0.2566E-05   0.6585E-06   (  0)
+    13     0.4104E-07   0.4328E-06  -0.4575E-07   0.1165E-06  -0.1374E-06   0.2641E-07   0.0000E+00   0.0000E+00   0.4335E-05   0.1113E-05   (  0)
+
+    average:  0.3013E-06   minimum: -0.1005E-06   maximum: 0.1113E-05     (left)
+  0.3013E-06  -0.1005E-06   0.1113E-05
+
+
+
+          J-values computed from mixed-mode stress intensity factors KI, KII and KIII.
+          KI- and KII-values correspond to plane stress conditions.
+
+ domain   J plane stress
+
+     1      0.6398E+00
+
+     2      0.6383E+00
+
+     3      0.6389E+00
+
+     4      0.6390E+00
+
+     5      0.6390E+00
+
+     6      0.6390E+00
+
+     7      0.6390E+00
+
+     8      0.6390E+00
+
+     9      0.6390E+00
+
+    10      0.6390E+00
+
+    11      0.6390E+00
+
+    12      0.6390E+00
+
+    13      0.6391E+00
+
+
+                               I-integral components
+                          --T-stress (plane stress auxiliary fields)--
+
+ domain        II1          II2          II3          II4          II5          II6          II7          II8       total I    T11 (pstrs)      T33     killed ele
+     1    -0.2292E+00   0.5796E+00  -0.3993E+00  -0.1120E+01   0.1120E+01  -0.4094E-03   0.0000E+00   0.0000E+00  -0.4894E+00  -0.3265E+00   0.0000E+00   (  0)
+     2    -0.1057E+00   0.2117E+00  -0.1460E+00  -0.1242E+01   0.1243E+01  -0.9465E-03   0.0000E+00   0.0000E+00  -0.4045E+00  -0.2699E+00   0.0000E+00   (  0)
+     3    -0.8378E-01   0.1450E+00  -0.1011E+00  -0.1265E+01   0.1265E+01  -0.1388E-02   0.0000E+00   0.0000E+00  -0.4057E+00  -0.2707E+00   0.0000E+00   (  0)
+     4    -0.7275E-01   0.1132E+00  -0.8010E-01  -0.1276E+01   0.1277E+01  -0.1753E-02   0.0000E+00   0.0000E+00  -0.4054E+00  -0.2705E+00   0.0000E+00   (  0)
+     5    -0.6455E-01   0.9031E-01  -0.6520E-01  -0.1284E+01   0.1285E+01  -0.2144E-02   0.0000E+00   0.0000E+00  -0.4053E+00  -0.2705E+00   0.0000E+00   (  0)
+     6    -0.5800E-01   0.7279E-01  -0.5393E-01  -0.1290E+01   0.1292E+01  -0.2560E-02   0.0000E+00   0.0000E+00  -0.4053E+00  -0.2705E+00   0.0000E+00   (  0)
+     7    -0.5252E-01   0.5892E-01  -0.4520E-01  -0.1296E+01   0.1297E+01  -0.3020E-02   0.0000E+00   0.0000E+00  -0.4053E+00  -0.2704E+00   0.0000E+00   (  0)
+     8    -0.4774E-01   0.4768E-01  -0.3833E-01  -0.1301E+01   0.1302E+01  -0.3529E-02   0.0000E+00   0.0000E+00  -0.4052E+00  -0.2704E+00   0.0000E+00   (  0)
+     9    -0.4343E-01   0.3845E-01  -0.3291E-01  -0.1305E+01   0.1307E+01  -0.4091E-02   0.0000E+00   0.0000E+00  -0.4052E+00  -0.2704E+00   0.0000E+00   (  0)
+    10    -0.3960E-01   0.3095E-01  -0.2865E-01  -0.1309E+01   0.1310E+01  -0.4710E-02   0.0000E+00   0.0000E+00  -0.4052E+00  -0.2704E+00   0.0000E+00   (  0)
+    11    -0.3600E-01   0.2479E-01  -0.2535E-01  -0.1312E+01   0.1314E+01  -0.5391E-02   0.0000E+00   0.0000E+00  -0.4052E+00  -0.2704E+00   0.0000E+00   (  0)
+    12    -0.3235E-01   0.1962E-01  -0.2293E-01  -0.1316E+01   0.1317E+01  -0.6153E-02   0.0000E+00   0.0000E+00  -0.4052E+00  -0.2704E+00   0.0000E+00   (  0)
+    13    -0.2858E-01   0.1530E-01  -0.2126E-01  -0.1320E+01   0.1321E+01  -0.7006E-02   0.0000E+00   0.0000E+00  -0.4052E+00  -0.2704E+00   0.0000E+00   (  0)
+
+    average:      minimum:      maximum:     (left)
+ -0.2747E+00  -0.3265E+00  -0.2699E+00
+  0.0000E+00   0.0000E+00   0.0000E+00
+                               I-integral components
+                          --T-stress (anti-plane shear auxiliary fields)--
+
+ domain        II1          II2          II3          II4          II5          II6          II7          II8       total I        T13     killed ele
+     1    -0.1139E-05   0.1378E-06   0.1147E-05   0.1387E-04  -0.1387E-04   0.3929E-10   0.0000E+00   0.0000E+00   0.1464E-05   0.3758E-06   (  0)
+     2    -0.6343E-06   0.2701E-05   0.6314E-06   0.1373E-04  -0.1374E-04   0.6543E-10   0.0000E+00   0.0000E+00   0.2695E-04   0.6918E-05   (  0)
+     3    -0.3376E-06   0.2842E-05   0.3379E-06   0.1344E-04  -0.1344E-04   0.9816E-10   0.0000E+00   0.0000E+00   0.2837E-04   0.7281E-05   (  0)
+     4    -0.1821E-06   0.2970E-05   0.1818E-06   0.1328E-04  -0.1329E-04   0.1287E-09   0.0000E+00   0.0000E+00   0.2963E-04   0.7604E-05   (  0)
+     5    -0.8081E-07   0.2968E-05   0.8177E-07   0.1318E-04  -0.1319E-04   0.1219E-09   0.0000E+00   0.0000E+00   0.2961E-04   0.7600E-05   (  0)
+     6    -0.1847E-07   0.3020E-05   0.2079E-07   0.1312E-04  -0.1313E-04   0.6173E-10   0.0000E+00   0.0000E+00   0.3013E-04   0.7734E-05   (  0)
+     7     0.9455E-08   0.2992E-05  -0.5451E-08   0.1309E-04  -0.1310E-04  -0.6226E-10   0.0000E+00   0.0000E+00   0.2986E-04   0.7664E-05   (  0)
+     8     0.2389E-07   0.2904E-05  -0.1893E-07   0.1307E-04  -0.1309E-04  -0.2446E-09   0.0000E+00   0.0000E+00   0.2898E-04   0.7438E-05   (  0)
+     9     0.2802E-07   0.2771E-05  -0.2246E-07   0.1307E-04  -0.1308E-04  -0.4898E-09   0.0000E+00   0.0000E+00   0.2767E-04   0.7101E-05   (  0)
+    10     0.1896E-07   0.2673E-05  -0.1183E-07   0.1308E-04  -0.1309E-04  -0.7429E-09   0.0000E+00   0.0000E+00   0.2670E-04   0.6854E-05   (  0)
+    11     0.1293E-07   0.2633E-05  -0.4331E-08   0.1309E-04  -0.1309E-04  -0.9604E-09   0.0000E+00   0.0000E+00   0.2634E-04   0.6760E-05   (  0)
+    12     0.7873E-08   0.2604E-05   0.9629E-09   0.1309E-04  -0.1310E-04  -0.1158E-08   0.0000E+00   0.0000E+00   0.2608E-04   0.6692E-05   (  0)
+    13     0.3081E-08   0.2601E-05   0.5685E-08   0.1310E-04  -0.1310E-04  -0.1287E-08   0.0000E+00   0.0000E+00   0.2607E-04   0.6690E-05   (  0)
+
+    average:  0.6670E-05   minimum:  0.3758E-06   maximum: 0.7734E-05     (left)
+  0.6670E-05   0.3758E-06   0.7734E-05
+
+ * II1: stress * deriv of aux. displ.
+ * II2: aux stress * derivative of displacement
+ * II3: mixed strain energy density (aux stress * strain)
+ * II4: stress * 2nd deriv of aux displ
+ * II5: stress * deriv of aux strain)
+ * II6: deriv of constitutive tensor * strain * auxstrain
+ * II7: thermal strains (not yet implemented)
+ * II8: traction * deriv of aux displ
+ * ( ): number of killed elements skipped
+
+ * note: automatic domain builder cannot detect
+         domains that reach a boundary
+
+
+>>> Completed domain integral calculations
+
+       c 
+       stop
+
+
+
+
+ >>>>>  solution timings   <<<<<
+
+
+  calculations for tangent stiffness:            
+
+   wall time (secs):     0.0137  1.9 (%) no. calls:        1
+
+
+  calculations for tangent mass:                 
+
+   wall time (secs):     0.0012  0.2 (%) no. calls:        1
+
+
+  calculations for sig-eps & internal force:     
+
+   wall time (secs):     0.0063  0.9 (%) no. calls:        2
+
+
+  calculations for domain integrals:             
+
+   wall time (secs):     0.0124  1.7 (%) no. calls:        2
+
+
+  calculations for assembly of struct. K:        
+
+   wall time (secs):     0.0143  2.0 (%) no. calls:        1
+
+
+  calculations for set-up equations:             
+
+   wall time (secs):     0.0064  0.9 (%) no. calls:        1
+
+
+  calculations for sparse indexes set-up:        
+
+   wall time (secs):     0.0225  3.2 (%) no. calls:        1
+
+
+  calculations for reordering, symbolic factor:  
+
+   wall time (secs):     0.3830 54.0 (%) no. calls:        1
+
+
+  calculations for sparse fill/factor/solve      
+
+   wall time (secs):     0.1281 18.1 (%) no. calls:        1
+ 
+ 
+>> total job wall time (secs):         0.71
